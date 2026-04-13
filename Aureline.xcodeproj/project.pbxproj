@@ -1,0 +1,759 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AU0000000000000000000001 /* AurelineApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000101 /* AurelineApp.swift */; };
+		AU0000000000000000000002 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000102 /* AppEnvironment.swift */; };
+		AU0000000000000000000003 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000103 /* AppRouter.swift */; };
+		AU0000000000000000000004 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000104 /* RootView.swift */; };
+		AU0000000000000000000005 /* AurelineDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000105 /* AurelineDesign.swift */; };
+		AU0000000000000000000006 /* VoiceMemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000201 /* VoiceMemo.swift */; };
+		AU0000000000000000000007 /* TranscriptSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000202 /* TranscriptSegment.swift */; };
+		AU0000000000000000000008 /* ExtractedActionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000203 /* ExtractedActionItem.swift */; };
+		AU0000000000000000000009 /* ExtractedMention.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000204 /* ExtractedMention.swift */; };
+		AU000000000000000000000A /* MemoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000301 /* MemoSource.swift */; };
+		AU000000000000000000000B /* ProcessingStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000302 /* ProcessingStatus.swift */; };
+		AU000000000000000000000C /* ExportStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000303 /* ExportStatus.swift */; };
+		AU000000000000000000000D /* ModelContainerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000401 /* ModelContainerProvider.swift */; };
+		AU000000000000000000000E /* VoiceMemoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000402 /* VoiceMemoRepository.swift */; };
+		AU000000000000000000000F /* PermissionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000501 /* PermissionCoordinator.swift */; };
+		AU0000000000000000000010 /* InboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000601 /* InboxView.swift */; };
+		AU0000000000000000000011 /* MemoRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000602 /* MemoRowView.swift */; };
+		AU0000000000000000000012 /* RecordImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000701 /* RecordImportView.swift */; };
+		AU0000000000000000000013 /* MemoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000801 /* MemoDetailView.swift */; };
+		AU0000000000000000000014 /* TranscriptSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000802 /* TranscriptSectionView.swift */; };
+		AU0000000000000000000015 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000901 /* SettingsView.swift */; };
+		AU0000000000000000000016 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000902 /* OnboardingView.swift */; };
+		AU0000000000000000000017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000A01 /* Assets.xcassets */; };
+		AU0000000000000000000018 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000A02 /* LaunchScreen.storyboard */; };
+		AU0000000000000000000019 /* AurelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000B01 /* AurelineTests.swift */; };
+		AU000000000000000000001A /* AurelineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000C01 /* AurelineUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AU0000000000000000001001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AU0000000000000000003004 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AU0000000000000000003001;
+			remoteInfo = Aureline;
+		};
+		AU0000000000000000001002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AU0000000000000000003004 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AU0000000000000000003001;
+			remoteInfo = Aureline;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		AU0000000000000000000101 /* AurelineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AurelineApp.swift; sourceTree = "<group>"; };
+		AU0000000000000000000102 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		AU0000000000000000000103 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		AU0000000000000000000104 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000105 /* AurelineDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AurelineDesign.swift; sourceTree = "<group>"; };
+		AU0000000000000000000201 /* VoiceMemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemo.swift; sourceTree = "<group>"; };
+		AU0000000000000000000202 /* TranscriptSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptSegment.swift; sourceTree = "<group>"; };
+		AU0000000000000000000203 /* ExtractedActionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractedActionItem.swift; sourceTree = "<group>"; };
+		AU0000000000000000000204 /* ExtractedMention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractedMention.swift; sourceTree = "<group>"; };
+		AU0000000000000000000301 /* MemoSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoSource.swift; sourceTree = "<group>"; };
+		AU0000000000000000000302 /* ProcessingStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingStatus.swift; sourceTree = "<group>"; };
+		AU0000000000000000000303 /* ExportStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportStatus.swift; sourceTree = "<group>"; };
+		AU0000000000000000000401 /* ModelContainerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelContainerProvider.swift; sourceTree = "<group>"; };
+		AU0000000000000000000402 /* VoiceMemoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoRepository.swift; sourceTree = "<group>"; };
+		AU0000000000000000000501 /* PermissionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionCoordinator.swift; sourceTree = "<group>"; };
+		AU0000000000000000000601 /* InboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000602 /* MemoRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoRowView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000701 /* RecordImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordImportView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000801 /* MemoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000802 /* TranscriptSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptSectionView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000901 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000902 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000A01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AU0000000000000000000A02 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AU0000000000000000000A03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AU0000000000000000000B01 /* AurelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AurelineTests.swift; sourceTree = "<group>"; };
+		AU0000000000000000000B02 /* AurelineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AurelineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AU0000000000000000000C01 /* AurelineUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AurelineUITests.swift; sourceTree = "<group>"; };
+		AU0000000000000000000C02 /* AurelineUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AurelineUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AU0000000000000000000D01 /* Aureline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aureline.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AU0000000000000000002001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AU0000000000000000002002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AU0000000000000000002003 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AU0000000000000000002101 = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000002102 /* Aureline */,
+				AU0000000000000000002103 /* AurelineTests */,
+				AU0000000000000000002104 /* AurelineUITests */,
+				AU0000000000000000002105 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002102 /* Aureline */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000002201 /* App */,
+				AU0000000000000000002202 /* Domain */,
+				AU0000000000000000002203 /* Infrastructure */,
+				AU0000000000000000002204 /* Features */,
+				AU0000000000000000002205 /* Resources */,
+			);
+			path = Aureline;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002103 /* AurelineTests */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000B01 /* AurelineTests.swift */,
+			);
+			path = AurelineTests;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002104 /* AurelineUITests */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000C01 /* AurelineUITests.swift */,
+			);
+			path = AurelineUITests;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002105 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000D01 /* Aureline.app */,
+				AU0000000000000000000B02 /* AurelineTests.xctest */,
+				AU0000000000000000000C02 /* AurelineUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002201 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000101 /* AurelineApp.swift */,
+				AU0000000000000000000102 /* AppEnvironment.swift */,
+				AU0000000000000000000103 /* AppRouter.swift */,
+				AU0000000000000000000104 /* RootView.swift */,
+				AU0000000000000000000105 /* AurelineDesign.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002202 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000002211 /* Models */,
+				AU0000000000000000002212 /* Types */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002203 /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000002221 /* Persistence */,
+				AU0000000000000000002222 /* Permissions */,
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002204 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000002231 /* Inbox */,
+				AU0000000000000000002232 /* Capture */,
+				AU0000000000000000002233 /* Detail */,
+				AU0000000000000000002234 /* Settings */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002205 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000A01 /* Assets.xcassets */,
+				AU0000000000000000000A02 /* LaunchScreen.storyboard */,
+				AU0000000000000000000A03 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002211 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000201 /* VoiceMemo.swift */,
+				AU0000000000000000000202 /* TranscriptSegment.swift */,
+				AU0000000000000000000203 /* ExtractedActionItem.swift */,
+				AU0000000000000000000204 /* ExtractedMention.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002212 /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000301 /* MemoSource.swift */,
+				AU0000000000000000000302 /* ProcessingStatus.swift */,
+				AU0000000000000000000303 /* ExportStatus.swift */,
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002221 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000401 /* ModelContainerProvider.swift */,
+				AU0000000000000000000402 /* VoiceMemoRepository.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002222 /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000501 /* PermissionCoordinator.swift */,
+			);
+			path = Permissions;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002231 /* Inbox */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000601 /* InboxView.swift */,
+				AU0000000000000000000602 /* MemoRowView.swift */,
+			);
+			path = Inbox;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002232 /* Capture */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000701 /* RecordImportView.swift */,
+			);
+			path = Capture;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002233 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000801 /* MemoDetailView.swift */,
+				AU0000000000000000000802 /* TranscriptSectionView.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002234 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000901 /* SettingsView.swift */,
+				AU0000000000000000000902 /* OnboardingView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AU0000000000000000003001 /* Aureline */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AU0000000000000000005002 /* Build configuration list for PBXNativeTarget "Aureline" */;
+			buildPhases = (
+				AU0000000000000000002004 /* Sources */,
+				AU0000000000000000002001 /* Frameworks */,
+				AU0000000000000000002005 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Aureline;
+			productName = Aureline;
+			productReference = AU0000000000000000000D01 /* Aureline.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AU0000000000000000003002 /* AurelineTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AU0000000000000000005003 /* Build configuration list for PBXNativeTarget "AurelineTests" */;
+			buildPhases = (
+				AU0000000000000000002006 /* Sources */,
+				AU0000000000000000002002 /* Frameworks */,
+				AU0000000000000000002007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AU0000000000000000006001 /* PBXTargetDependency */,
+			);
+			name = AurelineTests;
+			productName = AurelineTests;
+			productReference = AU0000000000000000000B02 /* AurelineTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		AU0000000000000000003003 /* AurelineUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AU0000000000000000005004 /* Build configuration list for PBXNativeTarget "AurelineUITests" */;
+			buildPhases = (
+				AU0000000000000000002008 /* Sources */,
+				AU0000000000000000002003 /* Frameworks */,
+				AU0000000000000000002009 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AU0000000000000000006002 /* PBXTargetDependency */,
+			);
+			name = AurelineUITests;
+			productName = AurelineUITests;
+			productReference = AU0000000000000000000C02 /* AurelineUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AU0000000000000000003004 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2640;
+				TargetAttributes = {
+					AU0000000000000000003001 = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					AU0000000000000000003002 = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = AU0000000000000000003001;
+					};
+					AU0000000000000000003003 = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = AU0000000000000000003001;
+					};
+				};
+			};
+			buildConfigurationList = AU0000000000000000005001 /* Build configuration list for PBXProject "Aureline" */;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AU0000000000000000002101;
+			productRefGroup = AU0000000000000000002105 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AU0000000000000000003001 /* Aureline */,
+				AU0000000000000000003002 /* AurelineTests */,
+				AU0000000000000000003003 /* AurelineUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AU0000000000000000002005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AU0000000000000000000017 /* Assets.xcassets in Resources */,
+				AU0000000000000000000018 /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AU0000000000000000002007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AU0000000000000000002009 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AU0000000000000000002004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AU0000000000000000000001 /* AurelineApp.swift in Sources */,
+				AU0000000000000000000002 /* AppEnvironment.swift in Sources */,
+				AU0000000000000000000003 /* AppRouter.swift in Sources */,
+				AU0000000000000000000004 /* RootView.swift in Sources */,
+				AU0000000000000000000005 /* AurelineDesign.swift in Sources */,
+				AU0000000000000000000006 /* VoiceMemo.swift in Sources */,
+				AU0000000000000000000007 /* TranscriptSegment.swift in Sources */,
+				AU0000000000000000000008 /* ExtractedActionItem.swift in Sources */,
+				AU0000000000000000000009 /* ExtractedMention.swift in Sources */,
+				AU000000000000000000000A /* MemoSource.swift in Sources */,
+				AU000000000000000000000B /* ProcessingStatus.swift in Sources */,
+				AU000000000000000000000C /* ExportStatus.swift in Sources */,
+				AU000000000000000000000D /* ModelContainerProvider.swift in Sources */,
+				AU000000000000000000000E /* VoiceMemoRepository.swift in Sources */,
+				AU000000000000000000000F /* PermissionCoordinator.swift in Sources */,
+				AU0000000000000000000010 /* InboxView.swift in Sources */,
+				AU0000000000000000000011 /* MemoRowView.swift in Sources */,
+				AU0000000000000000000012 /* RecordImportView.swift in Sources */,
+				AU0000000000000000000013 /* MemoDetailView.swift in Sources */,
+				AU0000000000000000000014 /* TranscriptSectionView.swift in Sources */,
+				AU0000000000000000000015 /* SettingsView.swift in Sources */,
+				AU0000000000000000000016 /* OnboardingView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AU0000000000000000002006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AU0000000000000000000019 /* AurelineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AU0000000000000000002008 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AU000000000000000000001A /* AurelineUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AU0000000000000000006001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AU0000000000000000003001 /* Aureline */;
+			targetProxy = AU0000000000000000001001 /* PBXContainerItemProxy */;
+		};
+		AU0000000000000000006002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AU0000000000000000003001 /* Aureline */;
+			targetProxy = AU0000000000000000001002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AU0000000000000000004001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AU0000000000000000004002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		AU0000000000000000004101 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Aureline/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.aureline;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AU0000000000000000004102 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Aureline/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.aureline;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		AU0000000000000000004201 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.aureline.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Aureline.app/Aureline";
+				TEST_TARGET_NAME = Aureline;
+			};
+			name = Debug;
+		};
+		AU0000000000000000004202 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.aureline.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Aureline.app/Aureline";
+				TEST_TARGET_NAME = Aureline;
+			};
+			name = Release;
+		};
+		AU0000000000000000004301 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.aureline.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Aureline;
+			};
+			name = Debug;
+		};
+		AU0000000000000000004302 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.aureline.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Aureline;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AU0000000000000000005001 /* Build configuration list for PBXProject "Aureline" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AU0000000000000000004001 /* Debug */,
+				AU0000000000000000004002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AU0000000000000000005002 /* Build configuration list for PBXNativeTarget "Aureline" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AU0000000000000000004101 /* Debug */,
+				AU0000000000000000004102 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AU0000000000000000005003 /* Build configuration list for PBXNativeTarget "AurelineTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AU0000000000000000004201 /* Debug */,
+				AU0000000000000000004202 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AU0000000000000000005004 /* Build configuration list for PBXNativeTarget "AurelineUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AU0000000000000000004301 /* Debug */,
+				AU0000000000000000004302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AU0000000000000000003004 /* Project object */;
+}

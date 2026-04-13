@@ -1,0 +1,11 @@
+.DS_Store
+.swift-module-cache/
+build/
+DerivedData/
+
+*.xcuserdatad/
+*.xcuserstate
+*.moved-aside
+*.perspectivev3
+
+xcuserdata/

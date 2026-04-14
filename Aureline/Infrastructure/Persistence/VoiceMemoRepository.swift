@@ -4,40 +4,104 @@ import SwiftData
 @MainActor
 struct VoiceMemoRepository {
     let modelContext: ModelContext
+    let audioFileStore: AudioFileStore
+
+    init(
+        modelContext: ModelContext,
+        audioFileStore: AudioFileStore = AudioFileStore()
+    ) {
+        self.modelContext = modelContext
+        self.audioFileStore = audioFileStore
+    }
 
     @discardableResult
-    func createPlaceholderMemo(source: MemoSource) -> VoiceMemo {
-        let title: String
-        let duration: Double
+    func createMemo(
+        title: String,
+        source: MemoSource,
+        audioSourceURL: URL,
+        localeIdentifier: String? = Locale.current.identifier
+    ) throws -> VoiceMemo {
+        let memo = VoiceMemo(
+            id: UUID(),
+            title: title,
+            source: source,
+            audioRelativePath: "",
+            originalFilename: nil,
+            durationSeconds: 0,
+            localeIdentifier: localeIdentifier
+        )
 
+        let storedAudio = try audioFileStore.importAudio(from: audioSourceURL, memoID: memo.id)
+        memo.audioRelativePath = storedAudio.relativePath
+        memo.originalFilename = storedAudio.originalFilename
+        memo.durationSeconds = storedAudio.durationSeconds
+
+        modelContext.insert(memo)
+
+        do {
+            try modelContext.save()
+            return memo
+        } catch {
+            modelContext.rollback()
+            try? audioFileStore.deleteAudio(atRelativePath: storedAudio.relativePath)
+            throw error
+        }
+    }
+
+    @discardableResult
+    func createDemoMemo(source: MemoSource) throws -> VoiceMemo {
+        let demoAudioURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: source)
+        defer { try? FileManager.default.removeItem(at: demoAudioURL.deletingLastPathComponent()) }
+
+        let title: String
         switch source {
         case .recorded:
             title = "Project follow-up"
-            duration = 78
         case .imported:
             title = "Client estimate"
-            duration = 52
         }
 
-        let memo = VoiceMemo(
+        return try createMemo(
             title: title,
             source: source,
-            audioRelativePath: "placeholder/\(UUID().uuidString).m4a",
-            originalFilename: source == .imported ? "sample-\(UUID().uuidString.prefix(6)).m4a" : nil,
-            durationSeconds: duration
+            audioSourceURL: demoAudioURL,
+            localeIdentifier: source == .recorded ? Locale.current.identifier : nil
         )
-        memo.transcriptText = nil
-        memo.lastProcessingError = nil
-        modelContext.insert(memo)
-        persist("Unable to save the new note.", memo: memo)
+    }
 
-        if source == .recorded {
-            memo.localeIdentifier = Locale.current.identifier
+    func fetchMemo(id: UUID) throws -> VoiceMemo? {
+        let descriptor = FetchDescriptor<VoiceMemo>(
+            predicate: #Predicate { memo in
+                memo.id == id
+            }
+        )
+        return try modelContext.fetch(descriptor).first
+    }
+
+    func fetchMemos() throws -> [VoiceMemo] {
+        let descriptor = FetchDescriptor<VoiceMemo>(
+            sortBy: [SortDescriptor(\VoiceMemo.createdAt, order: .reverse)]
+        )
+        return try modelContext.fetch(descriptor)
+    }
+
+    func deleteMemo(_ memo: VoiceMemo) throws {
+        let pendingDeletion = try audioFileStore.prepareForDeletion(atRelativePath: memo.audioRelativePath)
+        modelContext.delete(memo)
+
+        do {
+            try modelContext.save()
+            try audioFileStore.commitDeletion(pendingDeletion)
+        } catch {
+            modelContext.rollback()
+            try? audioFileStore.rollbackDeletion(pendingDeletion)
+            throw error
         }
+    }
 
-        memo.touch()
-        persist("Unable to update the new note.", memo: memo)
-        return memo
+    func deleteMemo(id: UUID) throws {
+        guard let memo = try fetchMemo(id: id) else { return }
+        try deleteMemo(memo)
     }
 
     func addPlaceholderTranscript(to memo: VoiceMemo) {

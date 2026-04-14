@@ -22,6 +22,7 @@
 		AU000000000000000000000D /* ModelContainerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000401 /* ModelContainerProvider.swift */; };
 		AU000000000000000000000E /* VoiceMemoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000402 /* VoiceMemoRepository.swift */; };
 		AU000000000000000000000F /* PermissionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000501 /* PermissionCoordinator.swift */; };
+		AU000000000000000000001B /* AudioFileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000502 /* AudioFileStore.swift */; };
 		AU0000000000000000000010 /* InboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000601 /* InboxView.swift */; };
 		AU0000000000000000000011 /* MemoRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000602 /* MemoRowView.swift */; };
 		AU0000000000000000000012 /* RecordImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000701 /* RecordImportView.swift */; };
@@ -68,6 +69,7 @@
 		AU0000000000000000000401 /* ModelContainerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelContainerProvider.swift; sourceTree = "<group>"; };
 		AU0000000000000000000402 /* VoiceMemoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoRepository.swift; sourceTree = "<group>"; };
 		AU0000000000000000000501 /* PermissionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionCoordinator.swift; sourceTree = "<group>"; };
+		AU0000000000000000000502 /* AudioFileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileStore.swift; sourceTree = "<group>"; };
 		AU0000000000000000000601 /* InboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxView.swift; sourceTree = "<group>"; };
 		AU0000000000000000000602 /* MemoRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoRowView.swift; sourceTree = "<group>"; };
 		AU0000000000000000000701 /* RecordImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordImportView.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 			children = (
 				AU0000000000000000002221 /* Persistence */,
 				AU0000000000000000002222 /* Permissions */,
+				AU0000000000000000002223 /* Storage */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -245,6 +248,14 @@
 				AU0000000000000000000501 /* PermissionCoordinator.swift */,
 			);
 			path = Permissions;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002223 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000502 /* AudioFileStore.swift */,
+			);
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		AU0000000000000000002231 /* Inbox */ = {
@@ -427,6 +438,7 @@
 				AU000000000000000000000D /* ModelContainerProvider.swift in Sources */,
 				AU000000000000000000000E /* VoiceMemoRepository.swift in Sources */,
 				AU000000000000000000000F /* PermissionCoordinator.swift in Sources */,
+				AU000000000000000000001B /* AudioFileStore.swift in Sources */,
 				AU0000000000000000000010 /* InboxView.swift in Sources */,
 				AU0000000000000000000011 /* MemoRowView.swift in Sources */,
 				AU0000000000000000000012 /* RecordImportView.swift in Sources */,

@@ -35,7 +35,7 @@ struct InboxView: View {
                 .font(.system(.largeTitle, design: .serif, weight: .bold))
                 .foregroundStyle(Color.white)
 
-            Text("Keep every voice note moving toward a clean next step.")
+            Text("Turn voice notes into next steps.")
                 .foregroundStyle(AurelinePalette.secondaryText)
         }
     }

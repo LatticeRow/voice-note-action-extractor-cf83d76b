@@ -2,7 +2,10 @@ import SwiftUI
 import SwiftData
 
 struct MemoDetailView: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @State private var errorMessage: String?
+    @State private var showsDeleteConfirmation = false
     let memo: VoiceMemo
 
     var body: some View {
@@ -15,12 +18,28 @@ struct MemoDetailView: View {
                 actionSection
 
                 extractionSection
+
+                deleteSection
             }
             .padding(20)
         }
         .screenBackground()
         .navigationTitle(memo.title)
         .navigationBarTitleDisplayMode(.inline)
+        .confirmationDialog(
+            "Delete this note?",
+            isPresented: $showsDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete Note", role: .destructive, action: deleteMemo)
+        } message: {
+            Text("This removes the note and its audio.")
+        }
+        .alert("Couldn’t update note", isPresented: errorAlertBinding) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "Try again.")
+        }
     }
 
     private var header: some View {
@@ -35,7 +54,7 @@ struct MemoDetailView: View {
                 .font(.headline)
                 .foregroundStyle(Color.white)
 
-            Text("Duration \(memo.durationText)")
+            Text(audioSummary)
                 .foregroundStyle(AurelinePalette.secondaryText)
         }
         .aurelineCard()
@@ -97,6 +116,46 @@ struct MemoDetailView: View {
             }
         }
         .aurelineCard()
+    }
+
+    private var deleteSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Manage")
+                .font(.headline)
+                .foregroundStyle(Color.white)
+
+            Button("Delete Note", role: .destructive) {
+                showsDeleteConfirmation = true
+            }
+            .buttonStyle(AurelineSecondaryButtonStyle())
+            .accessibilityIdentifier("detail.deleteMemo")
+        }
+        .aurelineCard()
+    }
+
+    private var audioSummary: String {
+        let filename = memo.originalFilename ?? URL(fileURLWithPath: memo.audioRelativePath).lastPathComponent
+        return "Duration \(memo.durationText) • \(filename)"
+    }
+
+    private var errorAlertBinding: Binding<Bool> {
+        Binding(
+            get: { errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    errorMessage = nil
+                }
+            }
+        )
+    }
+
+    private func deleteMemo() {
+        do {
+            try VoiceMemoRepository(modelContext: modelContext).deleteMemo(memo)
+            dismiss()
+        } catch {
+            errorMessage = "Aureline couldn’t update this note. Try again."
+        }
     }
 
     private static let shortDateFormatter: DateFormatter = {

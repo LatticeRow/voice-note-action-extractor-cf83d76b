@@ -14,7 +14,7 @@ struct TranscriptSectionView: View {
                     .foregroundStyle(Color.white.opacity(0.92))
                     .textSelection(.enabled)
             } else {
-                Text("Transcript appears here after you transcribe the note.")
+                Text("No transcript yet.")
                     .foregroundStyle(AurelinePalette.secondaryText)
             }
         }

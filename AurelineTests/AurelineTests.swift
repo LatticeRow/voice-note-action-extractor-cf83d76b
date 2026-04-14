@@ -4,28 +4,81 @@ import XCTest
 
 @MainActor
 final class AurelineTests: XCTestCase {
-    func testPlaceholderMemoStartsInInboxState() throws {
-        let container = ModelContainerProvider.makeDefaultContainer(inMemory: true)
-        let repository = VoiceMemoRepository(modelContext: ModelContext(container))
+    func testCreateMemoPersistsStoredAudioAndFetchesByID() throws {
+        let context = try makeModelContext()
+        let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .recorded)
+        defer { try? FileManager.default.removeItem(at: audioSourceURL) }
 
-        let memo = repository.createPlaceholderMemo(source: .recorded)
+        let memo = try context.repository.createMemo(
+            title: "Site recap",
+            source: .recorded,
+            audioSourceURL: audioSourceURL
+        )
+        let fetchedMemo = try context.repository.fetchMemo(id: memo.id)
+        let allMemos = try context.repository.fetchMemos()
+        let storedAudioURL = try context.audioFileStore.fileURL(for: memo.audioRelativePath)
 
+        XCTAssertNotNil(fetchedMemo)
+        XCTAssertEqual(allMemos.count, 1)
         XCTAssertEqual(memo.source, .recorded)
-        XCTAssertEqual(memo.transcriptionStatus, .notStarted)
-        XCTAssertEqual(memo.extractionStatus, .notStarted)
-        XCTAssertNil(memo.transcriptText)
+        XCTAssertEqual(fetchedMemo?.title, "Site recap")
+        XCTAssertEqual(memo.audioRelativePath, "Audio/\(memo.id.uuidString.lowercased()).wav")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: storedAudioURL.path))
+        XCTAssertGreaterThan(memo.durationSeconds, 0)
     }
 
-    func testPlaceholderExtractionBuildsReviewData() throws {
+    func testDeletingMemoRemovesStoredAudioAndCascadeRecords() throws {
+        let context = try makeModelContext()
+        let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .imported)
+        defer { try? FileManager.default.removeItem(at: audioSourceURL) }
+
+        let memo = try context.repository.createMemo(
+            title: "Client estimate",
+            source: .imported,
+            audioSourceURL: audioSourceURL
+        )
+        context.repository.addPlaceholderExtraction(to: memo)
+
+        let storedAudioURL = try context.audioFileStore.fileURL(for: memo.audioRelativePath)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: storedAudioURL.path))
+
+        try context.repository.deleteMemo(memo)
+
+        let remainingMemos = try context.repository.fetchMemos()
+        let remainingSegments = try context.modelContext.fetch(FetchDescriptor<TranscriptSegment>())
+        let remainingActionItems = try context.modelContext.fetch(FetchDescriptor<ExtractedActionItem>())
+        let remainingMentions = try context.modelContext.fetch(FetchDescriptor<ExtractedMention>())
+
+        XCTAssertTrue(remainingMemos.isEmpty)
+        XCTAssertTrue(remainingSegments.isEmpty)
+        XCTAssertTrue(remainingActionItems.isEmpty)
+        XCTAssertTrue(remainingMentions.isEmpty)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: storedAudioURL.path))
+    }
+
+    private func makeModelContext() throws -> RepositoryTestContext {
         let container = ModelContainerProvider.makeDefaultContainer(inMemory: true)
-        let repository = VoiceMemoRepository(modelContext: ModelContext(container))
+        let modelContext = ModelContext(container)
+        let applicationSupportDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: applicationSupportDirectory, withIntermediateDirectories: true)
 
-        let memo = repository.createPlaceholderMemo(source: .imported)
-        repository.addPlaceholderExtraction(to: memo)
+        let audioFileStore = AudioFileStore(applicationSupportDirectory: applicationSupportDirectory)
+        let repository = VoiceMemoRepository(modelContext: modelContext, audioFileStore: audioFileStore)
+        addTeardownBlock {
+            try? FileManager.default.removeItem(at: applicationSupportDirectory)
+        }
 
-        XCTAssertEqual(memo.transcriptionStatus, .completed)
-        XCTAssertEqual(memo.extractionStatus, .completed)
-        XCTAssertEqual(memo.actionItems.count, 2)
-        XCTAssertEqual(memo.mentions.count, 2)
+        return RepositoryTestContext(
+            modelContext: modelContext,
+            repository: repository,
+            audioFileStore: audioFileStore
+        )
     }
+}
+
+private struct RepositoryTestContext {
+    let modelContext: ModelContext
+    let repository: VoiceMemoRepository
+    let audioFileStore: AudioFileStore
 }

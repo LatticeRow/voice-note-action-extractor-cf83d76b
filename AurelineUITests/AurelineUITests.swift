@@ -27,6 +27,10 @@ final class AurelineUITests: XCTestCase {
         XCTAssertTrue(app.buttons["detail.addTranscript"].waitForExistence(timeout: 5))
         app.buttons["detail.addTranscript"].tap()
         app.buttons["detail.addReview"].tap()
+        app.buttons["detail.deleteMemo"].tap()
+        app.sheets.buttons["Delete Note"].tap()
+
+        XCTAssertFalse(memoButton.waitForExistence(timeout: 1))
 
         app.tabBars.buttons["Settings"].tap()
         XCTAssertTrue(app.buttons["settings.refresh"].waitForExistence(timeout: 5))

@@ -5,11 +5,11 @@ struct OnboardingView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("Start with a voice note.")
+            Text("Start with a note.")
                 .font(.title2.weight(.semibold))
                 .foregroundStyle(Color.white)
 
-            Text("Use Capture to add your first note.")
+            Text("Open Capture to add your first note.")
                 .foregroundStyle(AurelinePalette.secondaryText)
 
             Button("Open Capture", action: openCapture)

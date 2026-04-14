@@ -2,9 +2,9 @@ import SwiftData
 import SwiftUI
 
 struct RecordImportView: View {
-    @Environment(AppEnvironment.self) private var appEnvironment
     @Environment(\.modelContext) private var modelContext
-    @State private var statusMessage = "Add a note to your inbox from a fresh recording or an imported file."
+    @State private var statusMessage = "Choose a source."
+    @State private var errorMessage: String?
 
     var body: some View {
         ScrollView {
@@ -13,11 +13,11 @@ struct RecordImportView: View {
                     .font(.system(.largeTitle, design: .serif, weight: .bold))
                     .foregroundStyle(Color.white)
 
-                Text("Start from a fresh recording or bring in an existing file.")
+                Text("Add a note.")
                     .foregroundStyle(AurelinePalette.secondaryText)
 
                 VStack(alignment: .leading, spacing: 14) {
-                    Label("Local-first by design", systemImage: "lock.shield.fill")
+                    Label("Stored on this iPhone", systemImage: "lock.shield.fill")
                         .font(.headline)
                         .foregroundStyle(Color.white)
 
@@ -26,16 +26,14 @@ struct RecordImportView: View {
                 }
                 .aurelineCard()
 
-                Button("Add Recorded Note") {
-                    let memo = VoiceMemoRepository(modelContext: modelContext).createPlaceholderMemo(source: .recorded)
-                    statusMessage = "Added “\(memo.title)” to the inbox."
+                Button("Add Recording") {
+                    createDemoMemo(source: .recorded)
                 }
                 .buttonStyle(AurelinePrimaryButtonStyle())
                 .accessibilityIdentifier("capture.recordDraft")
 
-                Button("Add Imported Note") {
-                    let memo = VoiceMemoRepository(modelContext: modelContext).createPlaceholderMemo(source: .imported)
-                    statusMessage = "Added “\(memo.title)” to the inbox."
+                Button("Import File") {
+                    createDemoMemo(source: .imported)
                 }
                 .buttonStyle(AurelineSecondaryButtonStyle())
                 .accessibilityIdentifier("capture.importDraft")
@@ -45,7 +43,7 @@ struct RecordImportView: View {
                         .font(.headline)
                         .foregroundStyle(Color.white)
 
-                    Text("Microphone, speech recognition, and reminders remain off until you choose those actions.")
+                    Text("Access stays off until you use it.")
                         .foregroundStyle(AurelinePalette.secondaryText)
                 }
                 .aurelineCard()
@@ -55,5 +53,30 @@ struct RecordImportView: View {
         .screenBackground()
         .navigationTitle("Capture")
         .navigationBarTitleDisplayMode(.large)
+        .alert("Couldn’t save note", isPresented: errorAlertBinding) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "Try again.")
+        }
+    }
+
+    private var errorAlertBinding: Binding<Bool> {
+        Binding(
+            get: { errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    errorMessage = nil
+                }
+            }
+        )
+    }
+
+    private func createDemoMemo(source: MemoSource) {
+        do {
+            let memo = try VoiceMemoRepository(modelContext: modelContext).createDemoMemo(source: source)
+            statusMessage = "Saved “\(memo.title)”."
+        } catch {
+            errorMessage = "Aureline couldn’t save the note. Try again."
+        }
     }
 }

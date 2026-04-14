@@ -10,7 +10,7 @@ struct SettingsView: View {
                     .font(.system(.largeTitle, design: .serif, weight: .bold))
                     .foregroundStyle(Color.white)
 
-                Text("Privacy stays local. Review system access before recording, transcribing, or exporting.")
+                Text("Manage access.")
                     .foregroundStyle(AurelinePalette.secondaryText)
 
                 permissionCard
@@ -20,7 +20,7 @@ struct SettingsView: View {
                         .font(.headline)
                         .foregroundStyle(Color.white)
 
-                    Text("Aureline keeps memo data on the device and leaves cloud services out of the flow.")
+                    Text("Data stays on this iPhone.")
                         .foregroundStyle(AurelinePalette.secondaryText)
                 }
                 .aurelineCard()
@@ -45,7 +45,7 @@ struct SettingsView: View {
             permissionRow(title: "Speech", value: appEnvironment.permissions.speechStatus)
             permissionRow(title: "Reminders", value: appEnvironment.permissions.remindersStatus)
 
-            Button("Refresh Permission Status") {
+            Button("Refresh Access") {
                 appEnvironment.permissions.refreshStatuses()
             }
             .buttonStyle(AurelineSecondaryButtonStyle())

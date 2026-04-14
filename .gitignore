@@ -1,7 +1,10 @@
 .DS_Store
+.agentsight-codex-last.txt
 .swift-module-cache/
+.build/
 build/
 DerivedData/
+*.xcresult
 
 *.xcuserdatad/
 *.xcuserstate

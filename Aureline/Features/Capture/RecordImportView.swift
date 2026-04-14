@@ -15,7 +15,7 @@ struct RecordImportView: View {
     @Environment(\.openURL) private var openURL
 
     @State private var recorderService = AudioRecorderService()
-    @State private var statusMessage = "Save a new note to your inbox."
+    @State private var statusMessage = "Save a note to your inbox."
     @State private var activeAlert: CaptureAlert?
 
     private let audioImportService = AudioImportService()
@@ -233,7 +233,7 @@ struct RecordImportView: View {
         let message: String
         switch permission {
         case .denied:
-            message = "Allow microphone access in Settings to record a note."
+                message = "Allow microphone access in Settings to record."
         case .restricted:
             message = "This device can’t grant microphone access right now."
         case .unavailable:
@@ -243,7 +243,7 @@ struct RecordImportView: View {
         }
 
         activeAlert = CaptureAlert(
-            title: "Microphone Access Needed",
+            title: "Microphone Access",
             message: message,
             showsSettingsAction: permission.needsSettingsRecovery
         )

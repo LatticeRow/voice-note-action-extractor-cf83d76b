@@ -23,11 +23,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Aureline uses the microphone only when you choose to record a voice note.</string>
+	<string>Aureline uses the microphone when you record a note.</string>
 	<key>NSRemindersUsageDescription</key>
-	<string>Aureline can export selected action items to Reminders when you ask it to.</string>
+	<string>Aureline saves selected tasks to Reminders when you ask.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Aureline uses on-device speech recognition to turn a voice note into text.</string>
+	<string>Aureline turns a note into text when you ask for a transcript.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -108,6 +108,36 @@ final class AurelineUITests: XCTestCase {
     }
 
     @MainActor
+    func testSeededReviewFlowLetsUserEditAndSave() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingSeedInbox"]
+        app.launch()
+
+        let searchField = app.searchFields.firstMatch
+        XCTAssertTrue(searchField.waitForExistence(timeout: 5))
+        searchField.tap()
+        searchField.typeText("Client")
+
+        tapWhenReady(app.buttons["memoRow.Client estimate"])
+        XCTAssertTrue(app.staticTexts["Call Jordan tomorrow about the lighting quote."].waitForExistence(timeout: 5))
+
+        tapWhenReady(app.switches["extraction.item.0.toggle"])
+
+        let titleField = app.textFields["extraction.item.0.title"]
+        XCTAssertTrue(titleField.waitForExistence(timeout: 5))
+        titleField.tap()
+        titleField.typeText(" updated")
+
+        let mentionField = app.textFields["extraction.mention.0.text"]
+        XCTAssertTrue(mentionField.waitForExistence(timeout: 5))
+        mentionField.tap()
+        mentionField.typeText(" client")
+
+        tapWhenReady(app.buttons["detail.saveReview"])
+        XCTAssertTrue(app.staticTexts["Saved."].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
     func testTranscriptionFailureShowsExplicitMessage() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTesting", "-uiTestingOnDeviceUnavailable"]

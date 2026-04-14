@@ -28,7 +28,7 @@ struct ExtractionReviewView: View {
                 HStack(spacing: 12) {
                     ProgressView()
                         .tint(AurelinePalette.accent)
-                    Text("Aureline is finding next steps now.")
+                    Text("Reviewing this note.")
                         .foregroundStyle(AurelinePalette.secondaryText)
                 }
             case .failed:
@@ -41,7 +41,7 @@ struct ExtractionReviewView: View {
             case .notStarted:
                 AurelineStateView(
                     title: "No review yet",
-                    message: "Run review to pull out tasks and mentions.",
+                    message: "Run review to find tasks and key details.",
                     systemImage: "sparkles.rectangle.stack",
                     tint: AurelinePalette.caution
                 )
@@ -62,7 +62,7 @@ struct ExtractionReviewView: View {
         if memo.actionItems.isEmpty, memo.mentions.isEmpty {
             AurelineStateView(
                 title: "Nothing to review",
-                message: "Aureline didn’t find any clear tasks or mentions in this note.",
+                message: "No clear tasks or details were found in this note.",
                 systemImage: "checklist.unchecked",
                 tint: AurelinePalette.secondaryText
             )

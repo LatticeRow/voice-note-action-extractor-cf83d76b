@@ -14,7 +14,7 @@ struct OnboardingView: View {
             VStack(alignment: .leading, spacing: 12) {
                 onboardingFact(
                     title: "Private on this iPhone",
-                    message: "Your audio and transcript stay with Aureline unless you choose to share them.",
+                    message: "Your audio and text stay here unless you share or export them.",
                     symbolName: "lock.shield.fill"
                 )
 
@@ -41,7 +41,7 @@ struct OnboardingView: View {
                 .buttonStyle(AurelinePrimaryButtonStyle())
                 .accessibilityIdentifier("inbox.openCapture")
 
-            Button("Check Access", action: openSettings)
+            Button("Review Access", action: openSettings)
                 .buttonStyle(AurelineSecondaryButtonStyle())
                 .accessibilityIdentifier("inbox.reviewAccess")
         }

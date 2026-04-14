@@ -176,10 +176,10 @@ struct MemoDetailView: View {
         }
 
         if memo.transcriptionStatus != .completed {
-            return "Add text before review."
+            return "Add a transcript first."
         }
 
-        return "Review the tasks before you export."
+        return "Review tasks before you export."
     }
 
     private var exportHint: String {
@@ -188,10 +188,10 @@ struct MemoDetailView: View {
         }
 
         if !canExportToReminders {
-            return "Select at least one task to save it to Reminders."
+            return "Select at least one task to save it."
         }
 
-        return "Save selected tasks or share the full summary."
+        return "Save selected tasks or share the summary."
     }
 
     private func deleteMemo() {

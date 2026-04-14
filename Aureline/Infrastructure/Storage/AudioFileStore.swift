@@ -15,6 +15,7 @@ struct PendingAudioDeletion {
 struct AudioFileStore {
     private let fileManager: FileManager
     private let customApplicationSupportDirectory: URL?
+    private static let storageProtection = FileProtectionType.completeUntilFirstUserAuthentication
 
     init(fileManager: FileManager = .default, applicationSupportDirectory: URL? = nil) {
         self.fileManager = fileManager
@@ -32,6 +33,7 @@ struct AudioFileStore {
         if sourceURL.standardizedFileURL != destinationURL.standardizedFileURL {
             try fileManager.copyItem(at: sourceURL, to: destinationURL)
         }
+        try applyProtection(to: destinationURL)
 
         let relativePath = relativeAudioPath(for: destinationURL.lastPathComponent)
         return StoredAudioFile(
@@ -120,16 +122,19 @@ struct AudioFileStore {
         if !fileManager.fileExists(atPath: applicationSupportDirectory.path) {
             try fileManager.createDirectory(at: applicationSupportDirectory, withIntermediateDirectories: true)
         }
+        try applyProtection(to: applicationSupportDirectory)
 
         let audioDirectory = try audioDirectory()
         if !fileManager.fileExists(atPath: audioDirectory.path) {
             try fileManager.createDirectory(at: audioDirectory, withIntermediateDirectories: true)
         }
+        try applyProtection(to: audioDirectory)
 
         let trashDirectory = try trashDirectory()
         if !fileManager.fileExists(atPath: trashDirectory.path) {
             try fileManager.createDirectory(at: trashDirectory, withIntermediateDirectories: true)
         }
+        try applyProtection(to: trashDirectory)
     }
 
     private func applicationSupportDirectory() throws -> URL {
@@ -151,6 +156,13 @@ struct AudioFileStore {
 
     private func trashDirectory() throws -> URL {
         try applicationSupportDirectory().appendingPathComponent("AudioTrash", isDirectory: true)
+    }
+
+    private func applyProtection(to url: URL) throws {
+        try fileManager.setAttributes(
+            [.protectionKey: Self.storageProtection],
+            ofItemAtPath: url.path
+        )
     }
 }
 

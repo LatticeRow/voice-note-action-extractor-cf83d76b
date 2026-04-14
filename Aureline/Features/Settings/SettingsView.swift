@@ -13,7 +13,7 @@ struct SettingsView: View {
                     .font(.system(.largeTitle, design: .serif, weight: .bold))
                     .foregroundStyle(Color.white)
 
-                Text("Keep access current.")
+                Text("Review access and privacy.")
                     .foregroundStyle(AurelinePalette.secondaryText)
 
                 overviewCard
@@ -39,7 +39,7 @@ struct SettingsView: View {
 
             settingsFact(
                 title: "Private by default",
-                message: "Audio and transcripts stay on this iPhone until you share or export them.",
+                message: "Audio and text stay on this iPhone until you share or export them.",
                 symbolName: "lock.shield.fill"
             )
 
@@ -89,7 +89,7 @@ struct SettingsView: View {
                 .font(.headline)
                 .foregroundStyle(Color.white)
 
-            Text("If a permission is off, open Settings and turn it back on here.")
+            Text("If access is off, turn it back on in Settings.")
                 .foregroundStyle(AurelinePalette.secondaryText)
 
             Button("Open Settings", action: openAppSettings)

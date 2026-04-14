@@ -23,7 +23,7 @@ struct TranscriptSectionView: View {
                 HStack(spacing: 12) {
                     ProgressView()
                         .tint(AurelinePalette.accent)
-                    Text("Aureline is adding text now.")
+                    Text("Adding transcript.")
                         .foregroundStyle(AurelinePalette.secondaryText)
                 }
             case .failed:
@@ -36,7 +36,7 @@ struct TranscriptSectionView: View {
             case .notStarted:
                 AurelineStateView(
                     title: "No transcript yet",
-                    message: "Add text to review what was said.",
+                    message: "Add a transcript to review this note.",
                     systemImage: "text.badge.plus",
                     tint: AurelinePalette.caution
                 )
@@ -82,7 +82,7 @@ struct TranscriptSectionView: View {
         } else {
             AurelineStateView(
                 title: "No transcript text",
-                message: "Try adding text again.",
+                message: "Try again.",
                 systemImage: "text.page.slash",
                 tint: AurelinePalette.caution
             )

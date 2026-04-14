@@ -347,6 +347,55 @@ final class AurelineTests: XCTestCase {
         XCTAssertTrue(updatedMemo.mentions.contains(where: { $0.kind == .date }))
     }
 
+    func testApplyingTranscriptionClearsExistingReviewStateAndResetsExtractionStatus() throws {
+        let context = try makeModelContext()
+        let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .recorded)
+        defer { try? FileManager.default.removeItem(at: audioSourceURL.deletingLastPathComponent()) }
+
+        let memo = try context.repository.createMemo(
+            title: "Project recap",
+            source: .recorded,
+            audioSourceURL: audioSourceURL
+        )
+        try context.repository.applyTranscription(
+            TranscriptionPayload(
+                transcriptText: "Call Jordan tomorrow about the lighting quote.",
+                localeIdentifier: "en_US",
+                segments: [
+                    TranscriptionSegmentPayload(startSeconds: 0, durationSeconds: 3.4, text: "Call Jordan tomorrow about the lighting quote."),
+                ]
+            ),
+            to: memo
+        )
+        try context.repository.applyExtraction(
+            ActionExtractionService().extract(
+                from: try XCTUnwrap(memo.transcriptText),
+                localeIdentifier: memo.localeIdentifier,
+                referenceDate: memo.createdAt
+            ),
+            to: memo
+        )
+        memo.lastProcessingError = "Old error"
+
+        try context.repository.applyTranscription(
+            TranscriptionPayload(
+                transcriptText: "Email Priya the revised estimate tonight.",
+                localeIdentifier: "en_US",
+                segments: [
+                    TranscriptionSegmentPayload(startSeconds: 0, durationSeconds: 2.4, text: "Email Priya the revised estimate tonight."),
+                ]
+            ),
+            to: memo
+        )
+
+        XCTAssertEqual(memo.transcriptText, "Email Priya the revised estimate tonight.")
+        XCTAssertEqual(memo.transcriptSegments.count, 1)
+        XCTAssertTrue(memo.actionItems.isEmpty)
+        XCTAssertTrue(memo.mentions.isEmpty)
+        XCTAssertEqual(memo.extractionStatus, .notStarted)
+        XCTAssertNil(memo.lastProcessingError)
+    }
+
     func testReminderExportDraftsIncludeDueDateMemoTitleAndContext() throws {
         let calendar = Calendar(identifier: .gregorian)
         let createdAt = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-04-13T10:00:00Z"))
@@ -431,6 +480,37 @@ final class AurelineTests: XCTestCase {
         XCTAssertTrue(document.body.contains("Jordan"))
         XCTAssertTrue(document.body.contains("## Transcript"))
         XCTAssertTrue(document.body.contains("Send the revised site plan before Friday."))
+    }
+
+    func testNotesShareComposerFallsBackToAllTasksWhenNothingIsSelected() throws {
+        let createdAt = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-04-13T10:00:00Z"))
+        let memo = VoiceMemo(
+            createdAt: createdAt,
+            updatedAt: createdAt,
+            title: "Site recap",
+            source: .recorded,
+            audioRelativePath: "Audio/site-recap.m4a",
+            transcriptText: "Email Priya the estimate. Call Jordan about the permit."
+        )
+        let firstTask = ExtractedActionItem(
+            rawText: "Email Priya the estimate",
+            normalizedText: "Email Priya the estimate",
+            isSelectedForExport: false,
+            memo: memo
+        )
+        let secondTask = ExtractedActionItem(
+            rawText: "Call Jordan about the permit",
+            normalizedText: "Call Jordan about the permit",
+            isSelectedForExport: false,
+            memo: memo
+        )
+        memo.actionItems.append(firstTask)
+        memo.actionItems.append(secondTask)
+
+        let document = NotesShareComposer().makeDocument(for: memo)
+
+        XCTAssertTrue(document.body.contains("- [ ] Email Priya the estimate"))
+        XCTAssertTrue(document.body.contains("- [ ] Call Jordan about the permit"))
     }
 
     private func makeModelContext() throws -> RepositoryTestContext {

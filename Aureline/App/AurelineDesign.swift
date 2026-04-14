@@ -22,6 +22,41 @@ enum AurelinePalette {
     static let secondaryText = Color.white.opacity(0.66)
 }
 
+struct AurelineStateView: View {
+    let title: String
+    let message: String
+    let systemImage: String
+    let tint: Color
+
+    init(
+        title: String,
+        message: String,
+        systemImage: String,
+        tint: Color = AurelinePalette.secondaryText
+    ) {
+        self.title = title
+        self.message = message
+        self.systemImage = systemImage
+        self.tint = tint
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Image(systemName: systemImage)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(tint)
+
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(Color.white)
+
+            Text(message)
+                .foregroundStyle(AurelinePalette.secondaryText)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
 struct AurelineCardModifier: ViewModifier {
     func body(content: Content) -> some View {
         content

@@ -75,19 +75,27 @@ struct MemoDetailView: View {
                 AurelineBadge(title: memo.extractionStatus.title, tint: memo.extractionStatus.tint)
             }
 
-            Text("Audio")
+            Text(audioSummary)
                 .font(.headline)
                 .foregroundStyle(Color.white)
 
-            Text(audioSummary)
+            Text(metaSummary)
                 .foregroundStyle(AurelinePalette.secondaryText)
+
+            if let lastProcessingError = memo.lastProcessingError,
+               !lastProcessingError.isEmpty,
+               memo.transcriptionStatus == .failed || memo.extractionStatus == .failed {
+                Label(lastProcessingError, systemImage: "exclamationmark.triangle.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(AurelinePalette.negative)
+            }
         }
         .aurelineCard()
     }
 
     private var actionSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Actions")
+            Text("Next")
                 .font(.headline)
                 .foregroundStyle(Color.white)
 
@@ -107,8 +115,12 @@ struct MemoDetailView: View {
                 }
             }
             .buttonStyle(AurelineSecondaryButtonStyle())
-            .disabled(memo.transcriptionStatus != .completed)
+            .disabled(!canRunExtraction)
             .accessibilityIdentifier("detail.extractActions")
+
+            Text(actionHint)
+                .font(.footnote)
+                .foregroundStyle(AurelinePalette.secondaryText)
         }
         .aurelineCard()
     }
@@ -130,7 +142,28 @@ struct MemoDetailView: View {
 
     private var audioSummary: String {
         let filename = memo.originalFilename ?? URL(fileURLWithPath: memo.audioRelativePath).lastPathComponent
-        return "Duration \(memo.durationText) • \(filename)"
+        return filename
+    }
+
+    private var metaSummary: String {
+        "\(memo.durationText) • \(Self.dateFormatter.string(from: memo.createdAt))"
+    }
+
+    private var canRunExtraction: Bool {
+        memo.transcriptionStatus == .completed
+        && !(memo.transcriptText?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
+    }
+
+    private var actionHint: String {
+        if memo.transcriptionStatus == .processing {
+            return "Wait for the transcript to finish."
+        }
+
+        if memo.transcriptionStatus != .completed {
+            return "Add text before running review."
+        }
+
+        return "Review pulls out tasks and mentions you can edit."
     }
 
     private var errorAlertBinding: Binding<Bool> {
@@ -169,13 +202,20 @@ struct MemoDetailView: View {
     private var extractionActionTitle: String {
         switch memo.extractionStatus {
         case .notStarted:
-            return "Review Next Steps"
+            return "Run Review"
         case .processing:
             return "Reviewing"
         case .completed:
-            return "Refresh Review"
+            return "Run Again"
         case .failed:
             return "Try Review Again"
         }
     }
+
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }()
 }

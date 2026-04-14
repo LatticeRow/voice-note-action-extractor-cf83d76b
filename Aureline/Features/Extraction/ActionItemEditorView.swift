@@ -3,15 +3,27 @@ import SwiftUI
 struct ActionItemEditorView: View {
     @Bindable var item: ExtractedActionItem
     let index: Int
+    let onDelete: () -> Void
 
     @State private var showsDatePicker = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Toggle("Keep", isOn: $item.isSelectedForExport)
-                .tint(AurelinePalette.accent)
-                .foregroundStyle(Color.white)
-                .accessibilityIdentifier("extraction.item.\(index).toggle")
+            HStack(alignment: .top, spacing: 12) {
+                Toggle("Keep", isOn: $item.isSelectedForExport)
+                    .tint(AurelinePalette.accent)
+                    .foregroundStyle(Color.white)
+                    .accessibilityIdentifier("extraction.item.\(index).toggle")
+
+                Spacer()
+
+                Button(role: .destructive, action: onDelete) {
+                    Image(systemName: "trash")
+                        .font(.headline)
+                }
+                .accessibilityLabel("Delete task")
+                .accessibilityIdentifier("extraction.item.\(index).delete")
+            }
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Task")
@@ -20,6 +32,7 @@ struct ActionItemEditorView: View {
 
                 TextField("Task", text: $item.normalizedText)
                     .textInputAutocapitalization(.sentences)
+                    .lineLimit(2...4)
                     .foregroundStyle(Color.white)
                     .padding(12)
                     .background(

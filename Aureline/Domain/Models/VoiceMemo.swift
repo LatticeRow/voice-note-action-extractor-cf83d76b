@@ -80,6 +80,55 @@ extension VoiceMemo {
         Self.durationFormatter.string(from: durationSeconds) ?? "0:00"
     }
 
+    var sortedTranscriptSegments: [TranscriptSegment] {
+        transcriptSegments.sorted {
+            if $0.startSeconds == $1.startSeconds {
+                return $0.text < $1.text
+            }
+            return $0.startSeconds < $1.startSeconds
+        }
+    }
+
+    var sortedActionItems: [ExtractedActionItem] {
+        actionItems.sorted { lhs, rhs in
+            if lhs.isSelectedForExport != rhs.isSelectedForExport {
+                return lhs.isSelectedForExport && !rhs.isSelectedForExport
+            }
+            if lhs.confidence == rhs.confidence {
+                return lhs.normalizedText.localizedCaseInsensitiveCompare(rhs.normalizedText) == .orderedAscending
+            }
+            return lhs.confidence > rhs.confidence
+        }
+    }
+
+    var sortedMentions: [ExtractedMention] {
+        mentions.sorted { lhs, rhs in
+            if lhs.kindRaw == rhs.kindRaw {
+                return lhs.displayText.localizedCaseInsensitiveCompare(rhs.displayText) == .orderedAscending
+            }
+            return lhs.kindRaw < rhs.kindRaw
+        }
+    }
+
+    var selectedActionCount: Int {
+        actionItems.filter(\.isSelectedForExport).count
+    }
+
+    var transcriptPreview: String {
+        let text = (transcriptText ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else {
+            return statusSummary
+        }
+
+        if text.count <= 120 {
+            return text
+        }
+
+        let index = text.index(text.startIndex, offsetBy: 120)
+        return "\(text[..<index])."
+    }
+
     var statusSummary: String {
         if lastProcessingError != nil || transcriptionStatus == .failed || extractionStatus == .failed {
             return "Needs attention"
@@ -97,6 +146,25 @@ extension VoiceMemo {
             return "Transcribed"
         }
         return "Awaiting review"
+    }
+
+    var reviewSummary: String {
+        if extractionStatus == .completed {
+            if actionItems.isEmpty, mentions.isEmpty {
+                return "No items found"
+            }
+
+            var parts: [String] = []
+            if !actionItems.isEmpty {
+                parts.append("\(actionItems.count) \(actionItems.count == 1 ? "task" : "tasks")")
+            }
+            if !mentions.isEmpty {
+                parts.append("\(mentions.count) \(mentions.count == 1 ? "mention" : "mentions")")
+            }
+            return parts.joined(separator: " • ")
+        }
+
+        return extractionStatus.title
     }
 
     func touch() {

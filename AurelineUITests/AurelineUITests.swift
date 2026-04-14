@@ -11,27 +11,21 @@ final class AurelineUITests: XCTestCase {
         app.launchArguments = ["-uiTesting"]
         app.launch()
 
-        XCTAssertTrue(app.buttons["inbox.openCapture"].waitForExistence(timeout: 5))
-        app.buttons["inbox.openCapture"].tap()
+        tapWhenReady(app.buttons["inbox.openCapture"])
 
-        XCTAssertTrue(app.buttons["capture.startRecording"].waitForExistence(timeout: 5))
-        app.buttons["capture.startRecording"].tap()
-
+        tapWhenReady(app.buttons["capture.startRecording"])
         XCTAssertTrue(app.buttons["capture.saveRecording"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["capture.discardRecording"].waitForExistence(timeout: 5))
         app.buttons["capture.discardRecording"].tap()
 
-        XCTAssertTrue(app.buttons["capture.startRecording"].waitForExistence(timeout: 5))
-        app.buttons["capture.startRecording"].tap()
-        app.buttons["capture.saveRecording"].tap()
+        tapWhenReady(app.buttons["capture.startRecording"])
+        tapWhenReady(app.buttons["capture.saveRecording"])
 
-        XCTAssertTrue(app.buttons["detail.addTranscript"].waitForExistence(timeout: 5))
-        app.buttons["detail.addTranscript"].tap()
+        tapWhenReady(app.buttons["detail.addTranscript"])
         XCTAssertTrue(app.staticTexts["Call Jordan tomorrow about the lighting quote. Send the revised site plan before Friday."].waitForExistence(timeout: 5))
-        app.buttons["detail.extractActions"].tap()
+        tapWhenReady(app.buttons["detail.extractActions"])
 
-        XCTAssertTrue(app.switches["extraction.item.0.toggle"].waitForExistence(timeout: 5))
-        app.switches["extraction.item.0.toggle"].tap()
+        tapWhenReady(app.switches["extraction.item.0.toggle"])
 
         let titleField = app.textFields["extraction.item.0.title"]
         XCTAssertTrue(titleField.waitForExistence(timeout: 5))
@@ -43,26 +37,26 @@ final class AurelineUITests: XCTestCase {
         contactField.tap()
         contactField.typeText(" Lee")
 
-        let dateToggle = app.buttons["extraction.item.0.dateToggle"]
-        XCTAssertTrue(dateToggle.waitForExistence(timeout: 5))
-        dateToggle.tap()
+        tapWhenReady(app.buttons["extraction.item.0.dateToggle"])
         XCTAssertTrue(app.datePickers["extraction.item.0.datePicker"].waitForExistence(timeout: 5))
         app.datePickers["extraction.item.0.datePicker"].tap()
+        tapWhenReady(app.buttons["extraction.item.0.clearDate"])
 
-        let clearDate = app.buttons["extraction.item.0.clearDate"]
-        XCTAssertTrue(clearDate.waitForExistence(timeout: 5))
-        clearDate.tap()
+        let mentionField = app.textFields["extraction.mention.0.text"]
+        XCTAssertTrue(mentionField.waitForExistence(timeout: 5))
+        mentionField.tap()
+        mentionField.typeText(" updated")
 
-        XCTAssertTrue(app.buttons["detail.saveReview"].waitForExistence(timeout: 5))
-        app.buttons["detail.saveReview"].tap()
+        tapWhenReady(app.buttons["extraction.mention.1.delete"])
+        tapWhenReady(app.buttons["extraction.item.1.delete"])
+        tapWhenReady(app.buttons["detail.saveReview"])
 
         let backButton = app.navigationBars.buttons.element(boundBy: 0)
         XCTAssertTrue(backButton.waitForExistence(timeout: 5))
         backButton.tap()
 
         app.tabBars.buttons["Capture"].tap()
-        XCTAssertTrue(app.buttons["capture.importFile"].waitForExistence(timeout: 5))
-        app.buttons["capture.importFile"].tap()
+        tapWhenReady(app.buttons["capture.importFile"])
 
         let cancelButton = app.buttons["Cancel"].firstMatch
         if cancelButton.waitForExistence(timeout: 5) {
@@ -70,8 +64,39 @@ final class AurelineUITests: XCTestCase {
         }
 
         app.tabBars.buttons["Settings"].tap()
-        XCTAssertTrue(app.buttons["settings.refresh"].waitForExistence(timeout: 5))
-        app.buttons["settings.refresh"].tap()
+        tapWhenReady(app.buttons["settings.refresh"])
+    }
+
+    @MainActor
+    func testSeededInboxSearchAndStateNavigation() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingSeedInbox"]
+        app.launch()
+
+        let searchField = app.searchFields.firstMatch
+        XCTAssertTrue(searchField.waitForExistence(timeout: 5))
+        searchField.tap()
+        searchField.typeText("Client")
+
+        tapWhenReady(app.buttons["memoRow.Client estimate"])
+        XCTAssertTrue(app.staticTexts["Call Jordan tomorrow about the lighting quote."].waitForExistence(timeout: 5))
+
+        let backButton = app.navigationBars.buttons.element(boundBy: 0)
+        XCTAssertTrue(backButton.waitForExistence(timeout: 5))
+        backButton.tap()
+
+        clearSearchText(in: searchField)
+        searchField.typeText("Service")
+        tapWhenReady(app.buttons["memoRow.Service call"])
+        XCTAssertTrue(app.staticTexts["Transcript unavailable"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Offline transcription isn’t available on this device."].waitForExistence(timeout: 5))
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+
+        clearSearchText(in: searchField)
+        searchField.typeText("Morning")
+        tapWhenReady(app.buttons["memoRow.Morning brief"])
+        XCTAssertTrue(app.staticTexts["No transcript yet"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["No review yet"].waitForExistence(timeout: 5))
     }
 
     @MainActor
@@ -80,16 +105,25 @@ final class AurelineUITests: XCTestCase {
         app.launchArguments = ["-uiTesting", "-uiTestingOnDeviceUnavailable"]
         app.launch()
 
-        XCTAssertTrue(app.buttons["inbox.openCapture"].waitForExistence(timeout: 5))
-        app.buttons["inbox.openCapture"].tap()
-        XCTAssertTrue(app.buttons["capture.startRecording"].waitForExistence(timeout: 5))
-        app.buttons["capture.startRecording"].tap()
-        XCTAssertTrue(app.buttons["capture.saveRecording"].waitForExistence(timeout: 5))
-        app.buttons["capture.saveRecording"].tap()
+        tapWhenReady(app.buttons["inbox.openCapture"])
+        tapWhenReady(app.buttons["capture.startRecording"])
+        tapWhenReady(app.buttons["capture.saveRecording"])
+        tapWhenReady(app.buttons["detail.addTranscript"])
 
-        XCTAssertTrue(app.buttons["detail.addTranscript"].waitForExistence(timeout: 5))
-        app.buttons["detail.addTranscript"].tap()
+        XCTAssertTrue(
+            app.staticTexts["Offline transcription for English (United States) isn’t available on this device."].waitForExistence(timeout: 5)
+        )
+    }
 
-        XCTAssertTrue(app.staticTexts["Offline transcription for English (United States) isn’t available on this device."].waitForExistence(timeout: 5))
+    private func tapWhenReady(_ element: XCUIElement, timeout: TimeInterval = 5) {
+        XCTAssertTrue(element.waitForExistence(timeout: timeout))
+        element.tap()
+    }
+
+    private func clearSearchText(in field: XCUIElement) {
+        guard let currentValue = field.value as? String, !currentValue.isEmpty else { return }
+        field.tap()
+        let deleteString = String(repeating: XCUIKeyboardKey.delete.rawValue, count: currentValue.count)
+        field.typeText(deleteString)
     }
 }

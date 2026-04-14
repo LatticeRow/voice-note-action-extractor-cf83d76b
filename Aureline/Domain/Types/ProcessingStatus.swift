@@ -10,13 +10,13 @@ enum ProcessingStatus: String, CaseIterable, Codable {
     var title: String {
         switch self {
         case .notStarted:
-            return "Not started"
+            return "Pending"
         case .processing:
-            return "In progress"
+            return "Working"
         case .completed:
-            return "Ready"
+            return "Done"
         case .failed:
-            return "Error"
+            return "Failed"
         }
     }
 

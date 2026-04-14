@@ -13,6 +13,8 @@
 DerivedData/
 build/
 *.xcresult
+*.ipa
+*.dSYM.zip
 
 # Xcode user data
 xcuserdata/

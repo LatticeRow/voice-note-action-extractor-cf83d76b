@@ -1,14 +1,22 @@
+# macOS
 .DS_Store
+
+# Local agent state
 .agentsight-codex-last.txt
-.swift-module-cache/
+
+# SwiftPM
 .build/
-build/
+.swiftpm/
+.swift-module-cache/
+
+# Xcode build output
 DerivedData/
+build/
 *.xcresult
 
+# Xcode user data
+xcuserdata/
 *.xcuserdatad/
 *.xcuserstate
 *.moved-aside
 *.perspectivev3
-
-xcuserdata/

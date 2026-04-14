@@ -10,7 +10,7 @@ struct SettingsView: View {
                     .font(.system(.largeTitle, design: .serif, weight: .bold))
                     .foregroundStyle(Color.white)
 
-                Text("Manage access.")
+                Text("Review access.")
                     .foregroundStyle(AurelinePalette.secondaryText)
 
                 permissionCard

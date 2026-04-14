@@ -56,6 +56,45 @@ final class AurelineTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: storedAudioURL.path))
     }
 
+    func testImportServiceCreatesMemoAndNormalizesTitle() throws {
+        let context = try makeModelContext()
+        let originalAudioURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .imported)
+        let renamedAudioURL = originalAudioURL.deletingLastPathComponent()
+            .appendingPathComponent("client_follow-up copy.wav")
+
+        try FileManager.default.moveItem(at: originalAudioURL, to: renamedAudioURL)
+        defer { try? FileManager.default.removeItem(at: renamedAudioURL.deletingLastPathComponent()) }
+
+        let memo = try AudioImportService().importAudio(
+            from: [renamedAudioURL],
+            repository: context.repository
+        )
+
+        XCTAssertEqual(memo.source, .imported)
+        XCTAssertEqual(memo.title, "Client follow up copy")
+        XCTAssertTrue(memo.durationSeconds > 0)
+    }
+
+    func testImportServiceRejectsUnsupportedFiles() throws {
+        let context = try makeModelContext()
+        let directoryURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let fileURL = directoryURL.appendingPathComponent("notes.txt")
+
+        try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+        try Data("not audio".utf8).write(to: fileURL, options: .atomic)
+        defer { try? FileManager.default.removeItem(at: directoryURL) }
+
+        XCTAssertThrowsError(
+            try AudioImportService().importAudio(
+                from: [fileURL],
+                repository: context.repository
+            )
+        ) { error in
+            XCTAssertEqual(error as? AudioImportError, .unsupportedType)
+        }
+    }
+
     private func makeModelContext() throws -> RepositoryTestContext {
         let container = ModelContainerProvider.makeDefaultContainer(inMemory: true)
         let modelContext = ModelContext(container)

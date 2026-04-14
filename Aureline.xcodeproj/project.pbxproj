@@ -34,6 +34,9 @@
 		AU0000000000000000000018 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000A02 /* LaunchScreen.storyboard */; };
 		AU0000000000000000000019 /* AurelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000B01 /* AurelineTests.swift */; };
 		AU000000000000000000001A /* AurelineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000C01 /* AurelineUITests.swift */; };
+		AU000000000000000000001C /* AudioRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E01 /* AudioRecorderService.swift */; };
+		AU000000000000000000001D /* AudioImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E02 /* AudioImportService.swift */; };
+		AU000000000000000000001E /* ImportButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E03 /* ImportButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +88,9 @@
 		AU0000000000000000000C01 /* AurelineUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AurelineUITests.swift; sourceTree = "<group>"; };
 		AU0000000000000000000C02 /* AurelineUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AurelineUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AU0000000000000000000D01 /* Aureline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aureline.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AU0000000000000000000E01 /* AudioRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderService.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E02 /* AudioImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioImportService.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E03 /* ImportButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +134,7 @@
 				AU0000000000000000002201 /* App */,
 				AU0000000000000000002202 /* Domain */,
 				AU0000000000000000002203 /* Infrastructure */,
+				AU0000000000000000002206 /* Services */,
 				AU0000000000000000002204 /* Features */,
 				AU0000000000000000002205 /* Resources */,
 			);
@@ -196,10 +203,20 @@
 			children = (
 				AU0000000000000000002231 /* Inbox */,
 				AU0000000000000000002232 /* Capture */,
+				AU0000000000000000002235 /* Import */,
 				AU0000000000000000002233 /* Detail */,
 				AU0000000000000000002234 /* Settings */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002206 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000002241 /* Recording */,
+				AU0000000000000000002242 /* Import */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		AU0000000000000000002205 /* Resources */ = {
@@ -275,6 +292,14 @@
 			path = Capture;
 			sourceTree = "<group>";
 		};
+		AU0000000000000000002235 /* Import */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000E03 /* ImportButton.swift */,
+			);
+			path = Import;
+			sourceTree = "<group>";
+		};
 		AU0000000000000000002233 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,6 +316,22 @@
 				AU0000000000000000000902 /* OnboardingView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002241 /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000E01 /* AudioRecorderService.swift */,
+			);
+			path = Recording;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002242 /* Import */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000E02 /* AudioImportService.swift */,
+			);
+			path = Import;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -446,6 +487,9 @@
 				AU0000000000000000000014 /* TranscriptSectionView.swift in Sources */,
 				AU0000000000000000000015 /* SettingsView.swift in Sources */,
 				AU0000000000000000000016 /* OnboardingView.swift in Sources */,
+				AU000000000000000000001C /* AudioRecorderService.swift in Sources */,
+				AU000000000000000000001D /* AudioImportService.swift in Sources */,
+				AU000000000000000000001E /* ImportButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

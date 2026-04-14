@@ -96,11 +96,11 @@ struct AudioFileStore {
     }
 
     private func durationSeconds(for fileURL: URL) -> Double {
-        guard let audioFile = try? AVAudioFile(forReading: fileURL) else {
+        guard let player = try? AVAudioPlayer(contentsOf: fileURL) else {
             return 0
         }
 
-        let duration = Double(audioFile.length) / audioFile.processingFormat.sampleRate
+        let duration = player.duration
         guard duration.isFinite, duration > 0 else {
             return 0
         }
@@ -157,7 +157,8 @@ struct AudioFileStore {
 enum DemoAudioFileFactory {
     static func makeTemporaryAudioFile(
         source: MemoSource,
-        fileManager: FileManager = .default
+        fileManager: FileManager = .default,
+        durationSeconds: Int? = nil
     ) throws -> URL {
         let directoryURL = fileManager.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
@@ -174,7 +175,7 @@ enum DemoAudioFileFactory {
             .appendingPathComponent(filename)
             .appendingPathExtension("wav")
 
-        let durationSeconds = source == .recorded ? 18 : 12
+        let durationSeconds = durationSeconds ?? (source == .recorded ? 18 : 12)
         let sampleRate = 16_000
         let samples = durationSeconds * sampleRate
         let bytesPerSample = 2

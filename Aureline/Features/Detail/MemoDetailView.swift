@@ -62,17 +62,17 @@ struct MemoDetailView: View {
 
     private var actionSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Next steps")
+            Text("Actions")
                 .font(.headline)
                 .foregroundStyle(Color.white)
 
-            Button("Generate Transcript") {
+            Button("Transcribe") {
                 VoiceMemoRepository(modelContext: modelContext).addPlaceholderTranscript(to: memo)
             }
             .buttonStyle(AurelinePrimaryButtonStyle())
             .accessibilityIdentifier("detail.addTranscript")
 
-            Button("Prepare Review") {
+            Button("Find Next Steps") {
                 VoiceMemoRepository(modelContext: modelContext).addPlaceholderExtraction(to: memo)
             }
             .buttonStyle(AurelineSecondaryButtonStyle())
@@ -83,12 +83,12 @@ struct MemoDetailView: View {
 
     private var extractionSection: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Review")
+            Text("Next Steps")
                 .font(.headline)
                 .foregroundStyle(Color.white)
 
             if memo.actionItems.isEmpty {
-                Text("No action items yet.")
+                Text("No next steps yet.")
                     .foregroundStyle(AurelinePalette.secondaryText)
             } else {
                 ForEach(memo.actionItems) { item in

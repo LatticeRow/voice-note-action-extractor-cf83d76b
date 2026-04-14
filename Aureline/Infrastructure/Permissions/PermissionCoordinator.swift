@@ -24,6 +24,15 @@ enum AppPermissionState: String {
             return "Unavailable"
         }
     }
+
+    var needsSettingsRecovery: Bool {
+        switch self {
+        case .denied, .restricted:
+            return true
+        case .authorized, .notDetermined, .unavailable:
+            return false
+        }
+    }
 }
 
 @MainActor
@@ -34,16 +43,7 @@ final class PermissionCoordinator {
     var remindersStatus: AppPermissionState = .notDetermined
 
     func refreshStatuses() {
-        microphoneStatus = switch AVAudioApplication.shared.recordPermission {
-        case .granted:
-            .authorized
-        case .denied:
-            .denied
-        case .undetermined:
-            .notDetermined
-        @unknown default:
-            .unavailable
-        }
+        microphoneStatus = currentMicrophoneStatus()
 
         speechStatus = switch SFSpeechRecognizer.authorizationStatus() {
         case .authorized:
@@ -66,6 +66,37 @@ final class PermissionCoordinator {
         case .restricted:
             .restricted
         case .notDetermined:
+            .notDetermined
+        @unknown default:
+            .unavailable
+        }
+    }
+
+    func requestMicrophoneAccess() async -> AppPermissionState {
+        let currentStatus = currentMicrophoneStatus()
+        guard currentStatus == .notDetermined else {
+            microphoneStatus = currentStatus
+            return currentStatus
+        }
+
+        let granted = await withCheckedContinuation { continuation in
+            AVAudioApplication.requestRecordPermission { granted in
+                continuation.resume(returning: granted)
+            }
+        }
+
+        let updatedStatus: AppPermissionState = granted ? .authorized : .denied
+        microphoneStatus = updatedStatus
+        return updatedStatus
+    }
+
+    private func currentMicrophoneStatus() -> AppPermissionState {
+        switch AVAudioApplication.shared.recordPermission {
+        case .granted:
+            .authorized
+        case .denied:
+            .denied
+        case .undetermined:
             .notDetermined
         @unknown default:
             .unavailable

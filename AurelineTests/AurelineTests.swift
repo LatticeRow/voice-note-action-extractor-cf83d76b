@@ -4,6 +4,62 @@ import XCTest
 
 @MainActor
 final class AurelineTests: XCTestCase {
+    func testActionExtractionServiceProducesDeterministicOutputForFixtureTranscript() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? .gmt
+        let referenceDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 4, day: 13, hour: 10)))
+
+        let service = ActionExtractionService(
+            dateParser: DateEntityParser(calendar: calendar),
+            contactParser: ContactEntityParser()
+        )
+
+        let payload = try service.extract(
+            from: """
+            Call Jordan tomorrow about the lighting quote. Send the revised site plan before Friday.
+            FYI the permit packet is already filed.
+            """,
+            localeIdentifier: "en_US",
+            referenceDate: referenceDate
+        )
+
+        XCTAssertEqual(payload.actionItems.count, 2)
+        XCTAssertEqual(payload.actionItems.map(\.normalizedText), [
+            "Call Jordan tomorrow about the lighting quote",
+            "Send the revised site plan before Friday",
+        ])
+        XCTAssertEqual(payload.actionItems.first?.contactName, "Jordan")
+        XCTAssertEqual(payload.actionItems.first?.contactMethod, "Phone")
+        XCTAssertEqual(payload.actionItems.first?.dueDate, calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: referenceDate)))
+        XCTAssertEqual(payload.actionItems.last?.contactMethod, "Email")
+        XCTAssertEqual(payload.actionItems.last?.dueDate, calendar.date(from: DateComponents(year: 2026, month: 4, day: 17, hour: 9)))
+        XCTAssertEqual(payload.mentions.map(\.displayText), ["Jordan", "tomorrow", "before Friday"])
+    }
+
+    func testContactEntityParserFindsStructuredContacts() {
+        let contacts = ContactEntityParser().parse(
+            in: "Email Priya at priya@example.com. Call (415) 555-0199 when the truck arrives."
+        )
+
+        XCTAssertTrue(contacts.contains(where: { $0.kind == .emailAddress && ($0.normalizedValue ?? "").contains("priya@example.com") }))
+        XCTAssertTrue(contacts.contains(where: { $0.kind == .phoneNumber && ($0.normalizedValue ?? "").contains("415") }))
+    }
+
+    func testDateEntityParserFindsRelativeAndAbsoluteDates() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? .gmt
+        let referenceDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 4, day: 13, hour: 10)))
+
+        let dates = DateEntityParser(calendar: calendar).parse(
+            in: "Call Jordan tomorrow. Send the update before Friday. Meet again on April 21, 2026 at 9 AM.",
+            referenceDate: referenceDate
+        )
+
+        XCTAssertTrue(dates.contains(where: { $0.sourceText == "tomorrow" }))
+        XCTAssertTrue(dates.contains(where: { $0.sourceText == "before Friday" }))
+        XCTAssertTrue(dates.contains(where: { $0.sourceText == "April 21, 2026 at 9 AM" }))
+    }
+
     func testCreateMemoPersistsStoredAudioAndFetchesByID() throws {
         let context = try makeModelContext()
         let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .recorded)
@@ -37,7 +93,25 @@ final class AurelineTests: XCTestCase {
             source: .imported,
             audioSourceURL: audioSourceURL
         )
-        context.repository.addPlaceholderExtraction(to: memo)
+        try context.repository.applyTranscription(
+            TranscriptionPayload(
+                transcriptText: "Call Jordan tomorrow about the lighting quote. Send the revised site plan before Friday.",
+                localeIdentifier: "en_US",
+                segments: [
+                    TranscriptionSegmentPayload(startSeconds: 0, durationSeconds: 3.0, text: "Call Jordan tomorrow about the lighting quote."),
+                    TranscriptionSegmentPayload(startSeconds: 3.0, durationSeconds: 2.8, text: "Send the revised site plan before Friday."),
+                ]
+            ),
+            to: memo
+        )
+        try context.repository.applyExtraction(
+            ActionExtractionService().extract(
+                from: try XCTUnwrap(memo.transcriptText),
+                localeIdentifier: memo.localeIdentifier,
+                referenceDate: memo.createdAt
+            ),
+            to: memo
+        )
 
         let storedAudioURL = try context.audioFileStore.fileURL(for: memo.audioRelativePath)
         XCTAssertTrue(FileManager.default.fileExists(atPath: storedAudioURL.path))
@@ -173,6 +247,43 @@ final class AurelineTests: XCTestCase {
         let updatedMemo = try XCTUnwrap(context.repository.fetchMemo(id: memo.id))
         XCTAssertEqual(updatedMemo.transcriptionStatus, .completed)
         XCTAssertFalse(updatedMemo.transcriptSegments.isEmpty)
+    }
+
+    func testExtractionCoordinatorPersistsLinkedActionItemsAndMentionsWithoutSpeechAPIs() async throws {
+        let context = try makeModelContext()
+        let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .recorded)
+        defer { try? FileManager.default.removeItem(at: audioSourceURL.deletingLastPathComponent()) }
+
+        let memo = try context.repository.createMemo(
+            title: "Project recap",
+            source: .recorded,
+            audioSourceURL: audioSourceURL
+        )
+        memo.createdAt = ISO8601DateFormatter().date(from: "2026-04-13T10:00:00Z") ?? memo.createdAt
+        try context.repository.applyTranscription(
+            TranscriptionPayload(
+                transcriptText: "Call Jordan tomorrow about the lighting quote. Send the revised site plan before Friday.",
+                localeIdentifier: "en_US",
+                segments: []
+            ),
+            to: memo
+        )
+
+        let coordinator = ProcessingQueueCoordinator(
+            modelContainer: context.modelContainer,
+            audioFileStore: context.audioFileStore,
+            transcriptionService: MockTranscriptionService(),
+            actionExtractionService: ActionExtractionService()
+        )
+
+        await coordinator.extractMemo(id: memo.id)
+
+        let updatedMemo = try XCTUnwrap(context.repository.fetchMemo(id: memo.id))
+        XCTAssertEqual(updatedMemo.extractionStatus, .completed)
+        XCTAssertEqual(updatedMemo.actionItems.count, 2)
+        XCTAssertTrue(updatedMemo.actionItems.allSatisfy { $0.memo?.id == memo.id })
+        XCTAssertTrue(updatedMemo.mentions.contains(where: { $0.kind == .contact && $0.displayText == "Jordan" }))
+        XCTAssertTrue(updatedMemo.mentions.contains(where: { $0.kind == .date }))
     }
 
     private func makeModelContext() throws -> RepositoryTestContext {

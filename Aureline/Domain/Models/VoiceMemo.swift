@@ -81,14 +81,20 @@ extension VoiceMemo {
     }
 
     var statusSummary: String {
+        if lastProcessingError != nil || transcriptionStatus == .failed || extractionStatus == .failed {
+            return "Needs attention"
+        }
+        if extractionStatus == .processing {
+            return "Reviewing"
+        }
         if extractionStatus == .completed {
             return "Ready to review"
         }
+        if transcriptionStatus == .processing {
+            return "Transcribing"
+        }
         if transcriptionStatus == .completed {
             return "Transcribed"
-        }
-        if lastProcessingError != nil {
-            return "Needs attention"
         }
         return "Awaiting review"
     }

@@ -28,7 +28,33 @@ final class AurelineUITests: XCTestCase {
         XCTAssertTrue(app.buttons["detail.addTranscript"].waitForExistence(timeout: 5))
         app.buttons["detail.addTranscript"].tap()
         XCTAssertTrue(app.staticTexts["Call Jordan tomorrow about the lighting quote. Send the revised site plan before Friday."].waitForExistence(timeout: 5))
-        app.buttons["detail.addReview"].tap()
+        app.buttons["detail.extractActions"].tap()
+
+        XCTAssertTrue(app.switches["extraction.item.0.toggle"].waitForExistence(timeout: 5))
+        app.switches["extraction.item.0.toggle"].tap()
+
+        let titleField = app.textFields["extraction.item.0.title"]
+        XCTAssertTrue(titleField.waitForExistence(timeout: 5))
+        titleField.tap()
+        titleField.typeText(" updated")
+
+        let contactField = app.textFields["extraction.item.0.contact"]
+        XCTAssertTrue(contactField.waitForExistence(timeout: 5))
+        contactField.tap()
+        contactField.typeText(" Lee")
+
+        let dateToggle = app.buttons["extraction.item.0.dateToggle"]
+        XCTAssertTrue(dateToggle.waitForExistence(timeout: 5))
+        dateToggle.tap()
+        XCTAssertTrue(app.datePickers["extraction.item.0.datePicker"].waitForExistence(timeout: 5))
+        app.datePickers["extraction.item.0.datePicker"].tap()
+
+        let clearDate = app.buttons["extraction.item.0.clearDate"]
+        XCTAssertTrue(clearDate.waitForExistence(timeout: 5))
+        clearDate.tap()
+
+        XCTAssertTrue(app.buttons["detail.saveReview"].waitForExistence(timeout: 5))
+        app.buttons["detail.saveReview"].tap()
 
         let backButton = app.navigationBars.buttons.element(boundBy: 0)
         XCTAssertTrue(backButton.waitForExistence(timeout: 5))

@@ -7,6 +7,7 @@ struct MemoDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var errorMessage: String?
     @State private var showsDeleteConfirmation = false
+    @State private var reviewStatusMessage: String?
     let memo: VoiceMemo
 
     var body: some View {
@@ -18,7 +19,9 @@ struct MemoDetailView: View {
 
                 actionSection
 
-                extractionSection
+                ExtractionReviewView(memo: memo) {
+                    reviewStatusMessage = "Saved."
+                }
 
                 deleteSection
             }
@@ -40,6 +43,27 @@ struct MemoDetailView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "Try again.")
+        }
+        .safeAreaInset(edge: .bottom) {
+            if let reviewStatusMessage {
+                Text(reviewStatusMessage)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.black.opacity(0.82))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(
+                        Capsule()
+                            .fill(AurelinePalette.accent)
+                    )
+                    .padding(.bottom, 12)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .task {
+                        try? await Task.sleep(for: .seconds(1.6))
+                        if self.reviewStatusMessage == reviewStatusMessage {
+                            self.reviewStatusMessage = nil
+                        }
+                    }
+            }
         }
     }
 
@@ -77,49 +101,14 @@ struct MemoDetailView: View {
             .disabled(memo.transcriptionStatus == .processing)
             .accessibilityIdentifier("detail.addTranscript")
 
-            Button("Find Next Steps") {
-                VoiceMemoRepository(modelContext: modelContext).addPlaceholderExtraction(to: memo)
+            Button(extractionActionTitle) {
+                Task {
+                    await appEnvironment.processingQueue.extractMemo(id: memo.id)
+                }
             }
             .buttonStyle(AurelineSecondaryButtonStyle())
             .disabled(memo.transcriptionStatus != .completed)
-            .accessibilityIdentifier("detail.addReview")
-        }
-        .aurelineCard()
-    }
-
-    private var extractionSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("Next Steps")
-                .font(.headline)
-                .foregroundStyle(Color.white)
-
-            if memo.actionItems.isEmpty {
-                Text("No next steps yet.")
-                    .foregroundStyle(AurelinePalette.secondaryText)
-            } else {
-                ForEach(memo.actionItems) { item in
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(item.normalizedText)
-                            .foregroundStyle(Color.white)
-
-                        HStack(spacing: 8) {
-                            if let contactName = item.contactName {
-                                AurelineBadge(title: contactName, tint: AurelinePalette.accent)
-                            }
-
-                            if let dueDate = item.dueDate {
-                                AurelineBadge(title: Self.shortDateFormatter.string(from: dueDate), tint: AurelinePalette.positive)
-                            }
-                        }
-                    }
-                    .padding(14)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(AurelinePalette.cardRaised)
-                    )
-                }
-            }
+            .accessibilityIdentifier("detail.extractActions")
         }
         .aurelineCard()
     }
@@ -177,10 +166,16 @@ struct MemoDetailView: View {
         }
     }
 
-    private static let shortDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
-    }()
+    private var extractionActionTitle: String {
+        switch memo.extractionStatus {
+        case .notStarted:
+            return "Review Next Steps"
+        case .processing:
+            return "Reviewing"
+        case .completed:
+            return "Refresh Review"
+        case .failed:
+            return "Try Review Again"
+        }
+    }
 }

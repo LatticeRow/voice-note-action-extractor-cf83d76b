@@ -40,6 +40,11 @@
 		AU000000000000000000001F /* TranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E04 /* TranscriptionService.swift */; };
 		AU0000000000000000000020 /* SpeechTranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E05 /* SpeechTranscriptionService.swift */; };
 		AU0000000000000000000021 /* ProcessingQueueCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E06 /* ProcessingQueueCoordinator.swift */; };
+		AU0000000000000000000022 /* ActionExtractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E07 /* ActionExtractionService.swift */; };
+		AU0000000000000000000023 /* DateEntityParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E08 /* DateEntityParser.swift */; };
+		AU0000000000000000000024 /* ContactEntityParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E09 /* ContactEntityParser.swift */; };
+		AU0000000000000000000025 /* ExtractionReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000F01 /* ExtractionReviewView.swift */; };
+		AU0000000000000000000026 /* ActionItemEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000F02 /* ActionItemEditorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +102,11 @@
 		AU0000000000000000000E04 /* TranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionService.swift; sourceTree = "<group>"; };
 		AU0000000000000000000E05 /* SpeechTranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriptionService.swift; sourceTree = "<group>"; };
 		AU0000000000000000000E06 /* ProcessingQueueCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingQueueCoordinator.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E07 /* ActionExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionExtractionService.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E08 /* DateEntityParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateEntityParser.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E09 /* ContactEntityParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactEntityParser.swift; sourceTree = "<group>"; };
+		AU0000000000000000000F01 /* ExtractionReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000F02 /* ActionItemEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionItemEditorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +221,7 @@
 				AU0000000000000000002232 /* Capture */,
 				AU0000000000000000002235 /* Import */,
 				AU0000000000000000002233 /* Detail */,
+				AU0000000000000000002236 /* Extraction */,
 				AU0000000000000000002234 /* Settings */,
 			);
 			path = Features;
@@ -222,6 +233,7 @@
 				AU0000000000000000002241 /* Recording */,
 				AU0000000000000000002242 /* Import */,
 				AU0000000000000000002243 /* Transcription */,
+				AU0000000000000000002245 /* Extraction */,
 				AU0000000000000000002244 /* Processing */,
 			);
 			path = Services;
@@ -317,6 +329,15 @@
 			path = Detail;
 			sourceTree = "<group>";
 		};
+		AU0000000000000000002236 /* Extraction */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000F01 /* ExtractionReviewView.swift */,
+				AU0000000000000000000F02 /* ActionItemEditorView.swift */,
+			);
+			path = Extraction;
+			sourceTree = "<group>";
+		};
 		AU0000000000000000002234 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -357,6 +378,16 @@
 				AU0000000000000000000E06 /* ProcessingQueueCoordinator.swift */,
 			);
 			path = Processing;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002245 /* Extraction */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000E07 /* ActionExtractionService.swift */,
+				AU0000000000000000000E08 /* DateEntityParser.swift */,
+				AU0000000000000000000E09 /* ContactEntityParser.swift */,
+			);
+			path = Extraction;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -517,7 +548,12 @@
 				AU000000000000000000001E /* ImportButton.swift in Sources */,
 				AU000000000000000000001F /* TranscriptionService.swift in Sources */,
 				AU0000000000000000000020 /* SpeechTranscriptionService.swift in Sources */,
+				AU0000000000000000000022 /* ActionExtractionService.swift in Sources */,
+				AU0000000000000000000023 /* DateEntityParser.swift in Sources */,
+				AU0000000000000000000024 /* ContactEntityParser.swift in Sources */,
 				AU0000000000000000000021 /* ProcessingQueueCoordinator.swift in Sources */,
+				AU0000000000000000000025 /* ExtractionReviewView.swift in Sources */,
+				AU0000000000000000000026 /* ActionItemEditorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

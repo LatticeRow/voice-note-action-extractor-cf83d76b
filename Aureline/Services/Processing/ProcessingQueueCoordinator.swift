@@ -8,18 +8,22 @@ final class ProcessingQueueCoordinator {
     private let modelContainer: ModelContainer
     private let audioFileStore: AudioFileStore
     private let transcriptionService: any TranscriptionService
+    private let actionExtractionService: ActionExtractionService
 
     private var activeTranscriptionTasks: [UUID: Task<Void, Never>] = [:]
+    private var activeExtractionTasks: [UUID: Task<Void, Never>] = [:]
     private var resumedPendingJobs = false
 
     init(
         modelContainer: ModelContainer,
         audioFileStore: AudioFileStore = AudioFileStore(),
-        transcriptionService: any TranscriptionService
+        transcriptionService: any TranscriptionService,
+        actionExtractionService: ActionExtractionService = ActionExtractionService()
     ) {
         self.modelContainer = modelContainer
         self.audioFileStore = audioFileStore
         self.transcriptionService = transcriptionService
+        self.actionExtractionService = actionExtractionService
     }
 
     func transcribeMemo(id memoID: UUID, allowAuthorizationPrompt: Bool = true) async {
@@ -33,6 +37,20 @@ final class ProcessingQueueCoordinator {
             await self.runTranscription(for: memoID, allowAuthorizationPrompt: allowAuthorizationPrompt)
         }
         activeTranscriptionTasks[memoID] = task
+        await task.value
+    }
+
+    func extractMemo(id memoID: UUID) async {
+        if let existingTask = activeExtractionTasks[memoID] {
+            await existingTask.value
+            return
+        }
+
+        let task = Task { [weak self] in
+            guard let self else { return }
+            await self.runExtraction(for: memoID)
+        }
+        activeExtractionTasks[memoID] = task
         await task.value
     }
 
@@ -55,6 +73,16 @@ final class ProcessingQueueCoordinator {
         for memoID in memoIDs {
             Task { [weak self] in
                 await self?.transcribeMemo(id: memoID, allowAuthorizationPrompt: false)
+            }
+        }
+
+        guard let extractionIDs = try? repository.fetchMemoIDs(withExtractionStatus: .processing) else {
+            return
+        }
+
+        for memoID in extractionIDs {
+            Task { [weak self] in
+                await self?.extractMemo(id: memoID)
             }
         }
     }
@@ -91,6 +119,31 @@ final class ProcessingQueueCoordinator {
         }
     }
 
+    private func runExtraction(for memoID: UUID) async {
+        defer {
+            activeExtractionTasks[memoID] = nil
+        }
+
+        let repository = makeRepository()
+
+        do {
+            guard let memo = try repository.fetchMemo(id: memoID) else { return }
+            let transcriptText = memo.transcriptText ?? ""
+            try repository.prepareForExtraction(memo)
+
+            let extraction = try actionExtractionService.extract(
+                from: transcriptText,
+                localeIdentifier: memo.localeIdentifier,
+                referenceDate: memo.createdAt
+            )
+
+            guard let refreshedMemo = try repository.fetchMemo(id: memoID) else { return }
+            try repository.applyExtraction(extraction, to: refreshedMemo)
+        } catch {
+            handleExtractionFailure(error, memoID: memoID)
+        }
+    }
+
     private func handleAuthorizationStatus(_ status: TranscriptionAuthorizationState) throws {
         switch status {
         case .authorized:
@@ -113,6 +166,16 @@ final class ProcessingQueueCoordinator {
             try repository.failTranscription(for: memo, error: error)
         } catch {
             assertionFailure("Unable to persist transcription failure: \(error.localizedDescription)")
+        }
+    }
+
+    private func handleExtractionFailure(_ error: Error, memoID: UUID) {
+        do {
+            let repository = makeRepository()
+            guard let memo = try repository.fetchMemo(id: memoID) else { return }
+            try repository.failExtraction(for: memo, error: error)
+        } catch {
+            assertionFailure("Unable to persist extraction failure: \(error.localizedDescription)")
         }
     }
 

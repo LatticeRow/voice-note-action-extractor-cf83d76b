@@ -23,7 +23,8 @@ final class AppEnvironment {
 
         processingQueue = ProcessingQueueCoordinator(
             modelContainer: modelContainer,
-            transcriptionService: transcriptionService
+            transcriptionService: transcriptionService,
+            actionExtractionService: ActionExtractionService()
         )
     }
 }

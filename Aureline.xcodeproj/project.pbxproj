@@ -45,6 +45,9 @@
 		AU0000000000000000000024 /* ContactEntityParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E09 /* ContactEntityParser.swift */; };
 		AU0000000000000000000025 /* ExtractionReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000F01 /* ExtractionReviewView.swift */; };
 		AU0000000000000000000026 /* ActionItemEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000F02 /* ActionItemEditorView.swift */; };
+		AU0000000000000000000027 /* ReminderExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E0A /* ReminderExportService.swift */; };
+		AU0000000000000000000028 /* NotesShareComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E0B /* NotesShareComposer.swift */; };
+		AU0000000000000000000029 /* ExportSheetPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000F03 /* ExportSheetPresenter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +110,9 @@
 		AU0000000000000000000E09 /* ContactEntityParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactEntityParser.swift; sourceTree = "<group>"; };
 		AU0000000000000000000F01 /* ExtractionReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionReviewView.swift; sourceTree = "<group>"; };
 		AU0000000000000000000F02 /* ActionItemEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionItemEditorView.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E0A /* ReminderExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderExportService.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E0B /* NotesShareComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesShareComposer.swift; sourceTree = "<group>"; };
+		AU0000000000000000000F03 /* ExportSheetPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportSheetPresenter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +228,7 @@
 				AU0000000000000000002235 /* Import */,
 				AU0000000000000000002233 /* Detail */,
 				AU0000000000000000002236 /* Extraction */,
+				AU0000000000000000002237 /* Export */,
 				AU0000000000000000002234 /* Settings */,
 			);
 			path = Features;
@@ -234,6 +241,7 @@
 				AU0000000000000000002242 /* Import */,
 				AU0000000000000000002243 /* Transcription */,
 				AU0000000000000000002245 /* Extraction */,
+				AU0000000000000000002246 /* Export */,
 				AU0000000000000000002244 /* Processing */,
 			);
 			path = Services;
@@ -338,6 +346,14 @@
 			path = Extraction;
 			sourceTree = "<group>";
 		};
+		AU0000000000000000002237 /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000F03 /* ExportSheetPresenter.swift */,
+			);
+			path = Export;
+			sourceTree = "<group>";
+		};
 		AU0000000000000000002234 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -388,6 +404,15 @@
 				AU0000000000000000000E09 /* ContactEntityParser.swift */,
 			);
 			path = Extraction;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002246 /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000E0A /* ReminderExportService.swift */,
+				AU0000000000000000000E0B /* NotesShareComposer.swift */,
+			);
+			path = Export;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -554,6 +579,9 @@
 				AU0000000000000000000021 /* ProcessingQueueCoordinator.swift in Sources */,
 				AU0000000000000000000025 /* ExtractionReviewView.swift in Sources */,
 				AU0000000000000000000026 /* ActionItemEditorView.swift in Sources */,
+				AU0000000000000000000027 /* ReminderExportService.swift in Sources */,
+				AU0000000000000000000028 /* NotesShareComposer.swift in Sources */,
+				AU0000000000000000000029 /* ExportSheetPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

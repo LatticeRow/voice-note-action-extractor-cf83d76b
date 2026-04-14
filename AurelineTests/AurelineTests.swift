@@ -286,6 +286,92 @@ final class AurelineTests: XCTestCase {
         XCTAssertTrue(updatedMemo.mentions.contains(where: { $0.kind == .date }))
     }
 
+    func testReminderExportDraftsIncludeDueDateMemoTitleAndContext() throws {
+        let calendar = Calendar(identifier: .gregorian)
+        let createdAt = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-04-13T10:00:00Z"))
+        let dueDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 4, day: 14, hour: 9)))
+
+        let memo = VoiceMemo(
+            createdAt: createdAt,
+            updatedAt: createdAt,
+            title: "Client estimate",
+            source: .imported,
+            audioRelativePath: "Audio/client-estimate.m4a",
+            transcriptText: "Call Jordan tomorrow about the lighting quote."
+        )
+        let actionItem = ExtractedActionItem(
+            rawText: "Call Jordan tomorrow about the lighting quote",
+            normalizedText: "Call Jordan about the lighting quote",
+            dueDate: dueDate,
+            contactName: "Jordan",
+            contactMethod: "Phone",
+            memo: memo
+        )
+        memo.actionItems.append(actionItem)
+
+        let drafts = ReminderExportService.makeDrafts(for: memo, actionItems: [actionItem])
+
+        XCTAssertEqual(drafts.count, 1)
+        XCTAssertEqual(drafts.first?.title, "Call Jordan about the lighting quote")
+        XCTAssertEqual(drafts.first?.dueDate, dueDate)
+        XCTAssertTrue(drafts.first?.notes.contains("From Client estimate") ?? false)
+        XCTAssertTrue(drafts.first?.notes.contains("Due") ?? false)
+        XCTAssertTrue(drafts.first?.notes.contains("Jordan") ?? false)
+        XCTAssertTrue(drafts.first?.notes.contains("Call Jordan tomorrow about the lighting quote") ?? false)
+    }
+
+    func testNotesShareComposerBuildsMarkdownSummaryFromSelectedTasksAndTranscript() throws {
+        let createdAt = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-04-13T10:00:00Z"))
+        let memo = VoiceMemo(
+            createdAt: createdAt,
+            updatedAt: createdAt,
+            title: "Client estimate",
+            source: .imported,
+            audioRelativePath: "Audio/client-estimate.m4a",
+            transcriptText: "Call Jordan tomorrow about the lighting quote. Send the revised site plan before Friday."
+        )
+        let selectedTask = ExtractedActionItem(
+            rawText: "Call Jordan tomorrow about the lighting quote",
+            normalizedText: "Call Jordan about the lighting quote",
+            dueDate: createdAt.addingTimeInterval(86_400),
+            contactName: "Jordan",
+            contactMethod: "Phone",
+            memo: memo
+        )
+        let unselectedTask = ExtractedActionItem(
+            rawText: "Send the revised site plan before Friday",
+            normalizedText: "Send the revised site plan",
+            dueDate: nil,
+            contactName: nil,
+            contactMethod: "Email",
+            confidence: 0.82,
+            isSelectedForExport: false,
+            memo: memo
+        )
+        let mention = ExtractedMention(
+            kind: .contact,
+            displayText: "Jordan",
+            normalizedValue: nil,
+            confidence: 0.91,
+            memo: memo
+        )
+        memo.actionItems.append(selectedTask)
+        memo.actionItems.append(unselectedTask)
+        memo.mentions.append(mention)
+
+        let document = NotesShareComposer().makeDocument(for: memo)
+
+        XCTAssertEqual(document.subject, "Client estimate")
+        XCTAssertTrue(document.body.contains("# Client estimate"))
+        XCTAssertTrue(document.body.contains("## Tasks"))
+        XCTAssertTrue(document.body.contains("Call Jordan about the lighting quote"))
+        XCTAssertFalse(document.body.contains("- [ ] Send the revised site plan"))
+        XCTAssertTrue(document.body.contains("## Mentions"))
+        XCTAssertTrue(document.body.contains("Jordan"))
+        XCTAssertTrue(document.body.contains("## Transcript"))
+        XCTAssertTrue(document.body.contains("Send the revised site plan before Friday."))
+    }
+
     private func makeModelContext() throws -> RepositoryTestContext {
         let container = ModelContainerProvider.makeDefaultContainer(inMemory: true)
         let modelContext = ModelContext(container)

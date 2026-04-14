@@ -27,7 +27,7 @@ struct RecordImportView: View {
                     .font(.system(.largeTitle, design: .serif, weight: .bold))
                     .foregroundStyle(Color.white)
 
-                Text("Record a note or import one from Files.")
+                Text("Record or import audio.")
                     .foregroundStyle(AurelinePalette.secondaryText)
 
                 summaryCard

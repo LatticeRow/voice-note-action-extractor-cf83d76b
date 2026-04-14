@@ -10,7 +10,7 @@ struct SettingsView: View {
                     .font(.system(.largeTitle, design: .serif, weight: .bold))
                     .foregroundStyle(Color.white)
 
-                Text("Review access.")
+                Text("Check access.")
                     .foregroundStyle(AurelinePalette.secondaryText)
 
                 permissionCard
@@ -20,7 +20,7 @@ struct SettingsView: View {
                         .font(.headline)
                         .foregroundStyle(Color.white)
 
-                    Text("Data stays on this iPhone.")
+                    Text("Everything stays on this iPhone.")
                         .foregroundStyle(AurelinePalette.secondaryText)
                 }
                 .aurelineCard()

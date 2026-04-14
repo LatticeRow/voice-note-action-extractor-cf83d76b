@@ -115,6 +115,31 @@ final class AurelineUITests: XCTestCase {
         )
     }
 
+    @MainActor
+    func testExportFlowExercisesRemindersAndShareSheet() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingSeedInbox"]
+        app.launch()
+
+        let searchField = app.searchFields.firstMatch
+        XCTAssertTrue(searchField.waitForExistence(timeout: 5))
+        searchField.tap()
+        searchField.typeText("Client")
+
+        tapWhenReady(app.buttons["memoRow.Client estimate"])
+        tapWhenReady(app.buttons["detail.exportReminders"])
+
+        tapWhenReady(app.buttons["export.reminders.list.1"])
+        tapWhenReady(app.buttons["export.reminders.list.0"])
+        tapWhenReady(app.buttons["export.reminders.cancel"])
+
+        tapWhenReady(app.buttons["detail.exportReminders"])
+        tapWhenReady(app.buttons["export.reminders.list.1"])
+        tapWhenReady(app.buttons["export.reminders.confirm"])
+
+        tapWhenReady(app.buttons["detail.shareSummary"])
+    }
+
     private func tapWhenReady(_ element: XCUIElement, timeout: TimeInterval = 5) {
         XCTAssertTrue(element.waitForExistence(timeout: timeout))
         element.tap()

@@ -9,7 +9,7 @@ struct OnboardingView: View {
                 .font(.title2.weight(.semibold))
                 .foregroundStyle(Color.white)
 
-            Text("Use Capture to record or import audio.")
+            Text("Record or import audio.")
                 .foregroundStyle(AurelinePalette.secondaryText)
 
             Button("Open Capture", action: openCapture)

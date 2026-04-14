@@ -8,6 +8,8 @@ final class AppEnvironment {
     let router = AppRouter()
     let permissions = PermissionCoordinator()
     let processingQueue: ProcessingQueueCoordinator
+    let reminderExporter: any ReminderExporting
+    let notesShareComposer = NotesShareComposer()
 
     init(modelContainer: ModelContainer, launchArguments: [String] = ProcessInfo.processInfo.arguments) {
         let transcriptionService: any TranscriptionService
@@ -19,6 +21,12 @@ final class AppEnvironment {
             transcriptionService = MockTranscriptionService()
         } else {
             transcriptionService = SpeechTranscriptionService()
+        }
+
+        if launchArguments.contains("-uiTesting") {
+            reminderExporter = MockReminderExportService()
+        } else {
+            reminderExporter = ReminderExportService()
         }
 
         processingQueue = ProcessingQueueCoordinator(

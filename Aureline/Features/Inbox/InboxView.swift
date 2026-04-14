@@ -47,7 +47,7 @@ struct InboxView: View {
                 .font(.system(.largeTitle, design: .serif, weight: .bold))
                 .foregroundStyle(Color.white)
 
-            Text("Turn voice notes into next steps.")
+            Text("Voice notes, ready to act.")
                 .foregroundStyle(AurelinePalette.secondaryText)
         }
     }
@@ -64,7 +64,7 @@ struct InboxView: View {
                 AurelineBadge(title: "\(count(for: .failed)) failed", tint: ProcessingStatus.failed.tint)
             }
 
-            Text("Open any note to add text or review next steps.")
+            Text("Open a note to work with it.")
                 .foregroundStyle(AurelinePalette.secondaryText)
         }
         .aurelineCard()

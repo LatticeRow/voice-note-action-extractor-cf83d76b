@@ -2,6 +2,17 @@ import Observation
 import Foundation
 import SwiftData
 
+private enum ProcessingRecoveryError: LocalizedError {
+    case transcriptMissing
+
+    var errorDescription: String? {
+        switch self {
+        case .transcriptMissing:
+            return "Review stopped before the transcript was ready. Try again."
+        }
+    }
+}
+
 @MainActor
 @Observable
 final class ProcessingQueueCoordinator {
@@ -12,7 +23,7 @@ final class ProcessingQueueCoordinator {
 
     private var activeTranscriptionTasks: [UUID: Task<Void, Never>] = [:]
     private var activeExtractionTasks: [UUID: Task<Void, Never>] = [:]
-    private var resumedPendingJobs = false
+    private var recoveryTask: Task<Void, Never>?
 
     init(
         modelContainer: ModelContainer,
@@ -54,35 +65,36 @@ final class ProcessingQueueCoordinator {
         await task.value
     }
 
-    func resumePendingJobsIfNeeded() {
-        guard !resumedPendingJobs else { return }
-        resumedPendingJobs = true
+    func resumePendingJobsIfNeeded() async {
+        if let recoveryTask {
+            await recoveryTask.value
+            return
+        }
 
-        Task { [weak self] in
+        let task: Task<Void, Never> = Task { [weak self] in
             await self?.resumePendingJobs()
         }
+        recoveryTask = task
+        await task.value
+        recoveryTask = nil
     }
 
     private func resumePendingJobs() async {
         let repository = makeRepository()
+        let transcriptionIDs = Set((try? repository.fetchMemoIDs(withTranscriptionStatus: .processing)) ?? [])
+        let extractionIDs = Set((try? repository.fetchMemoIDs(withExtractionStatus: .processing)) ?? [])
 
-        guard let memoIDs = try? repository.fetchMemoIDs(withTranscriptionStatus: .processing) else {
-            return
-        }
-
-        for memoID in memoIDs {
-            Task { [weak self] in
-                await self?.transcribeMemo(id: memoID, allowAuthorizationPrompt: false)
+        await withTaskGroup(of: Void.self) { taskGroup in
+            for memoID in transcriptionIDs {
+                taskGroup.addTask { [weak self] in
+                    await self?.transcribeMemo(id: memoID, allowAuthorizationPrompt: false)
+                }
             }
-        }
 
-        guard let extractionIDs = try? repository.fetchMemoIDs(withExtractionStatus: .processing) else {
-            return
-        }
-
-        for memoID in extractionIDs {
-            Task { [weak self] in
-                await self?.extractMemo(id: memoID)
+            for memoID in extractionIDs.subtracting(transcriptionIDs) {
+                taskGroup.addTask { [weak self] in
+                    await self?.resumeExtractionIfPossible(for: memoID)
+                }
             }
         }
     }
@@ -97,10 +109,10 @@ final class ProcessingQueueCoordinator {
         do {
             guard let memo = try repository.fetchMemo(id: memoID) else { return }
 
-            if allowAuthorizationPrompt {
-                let authorizationStatus = await transcriptionService.requestAuthorizationIfNeeded()
-                try handleAuthorizationStatus(authorizationStatus)
-            }
+            let authorizationStatus = allowAuthorizationPrompt
+                ? await transcriptionService.requestAuthorizationIfNeeded()
+                : transcriptionService.authorizationStatus()
+            try handleAuthorizationStatus(authorizationStatus)
 
             let audioFileURL = try repository.audioFileURL(for: memo)
             let localeIdentifier = memo.localeIdentifier
@@ -117,6 +129,26 @@ final class ProcessingQueueCoordinator {
         } catch {
             handleFailure(error, memoID: memoID)
         }
+    }
+
+    private func resumeExtractionIfPossible(for memoID: UUID) async {
+        let repository = makeRepository()
+
+        do {
+            guard let memo = try repository.fetchMemo(id: memoID) else { return }
+
+            let transcriptText = (memo.transcriptText ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !transcriptText.isEmpty else {
+                try repository.failExtraction(for: memo, error: ProcessingRecoveryError.transcriptMissing)
+                return
+            }
+        } catch {
+            handleExtractionFailure(error, memoID: memoID)
+            return
+        }
+
+        await extractMemo(id: memoID)
     }
 
     private func runExtraction(for memoID: UUID) async {

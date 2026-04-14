@@ -3,6 +3,7 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(AppEnvironment.self) private var appEnvironment
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         @Bindable var router = appEnvironment.router
@@ -41,7 +42,13 @@ struct RootView: View {
         .tint(AurelinePalette.accent)
         .background(AurelinePalette.background.ignoresSafeArea())
         .task {
-            appEnvironment.processingQueue.resumePendingJobsIfNeeded()
+            appEnvironment.permissions.refreshStatuses()
+            await appEnvironment.processingQueue.resumePendingJobsIfNeeded()
+        }
+        .task(id: scenePhase) {
+            guard scenePhase == .active else { return }
+            appEnvironment.permissions.refreshStatuses()
+            await appEnvironment.processingQueue.resumePendingJobsIfNeeded()
         }
     }
 }

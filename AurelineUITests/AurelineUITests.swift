@@ -11,6 +11,14 @@ final class AurelineUITests: XCTestCase {
         app.launchArguments = ["-uiTesting"]
         app.launch()
 
+        tapWhenReady(app.buttons["inbox.reviewAccess"])
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        tapWhenReady(app.buttons["settings.permission.microphone.action"])
+        tapWhenReady(app.buttons["settings.permission.speech.action"])
+        tapWhenReady(app.buttons["settings.permission.reminders.action"])
+        tapWhenReady(app.buttons["settings.refresh"])
+
+        app.tabBars.buttons["Inbox"].tap()
         tapWhenReady(app.buttons["inbox.openCapture"])
 
         tapWhenReady(app.buttons["capture.startRecording"])

@@ -12,9 +12,19 @@ struct InboxView: View {
                 header
 
                 if memos.isEmpty {
-                    OnboardingView {
-                        appEnvironment.router.openCapture()
-                    }
+                    OnboardingView(
+                        permissionStates: [
+                            .microphone: appEnvironment.permissions.microphoneStatus,
+                            .speech: appEnvironment.permissions.speechStatus,
+                            .reminders: appEnvironment.permissions.remindersStatus,
+                        ],
+                        openCapture: {
+                            appEnvironment.router.openCapture()
+                        },
+                        openSettings: {
+                            appEnvironment.router.openSettings()
+                        }
+                    )
                 } else if filteredMemos.isEmpty {
                     AurelineStateView(
                         title: "No matches",
@@ -39,6 +49,9 @@ struct InboxView: View {
         .navigationTitle("Inbox")
         .navigationBarTitleDisplayMode(.large)
         .searchable(text: $searchText, prompt: "Search notes")
+        .task {
+            appEnvironment.permissions.refreshStatuses()
+        }
     }
 
     private var header: some View {

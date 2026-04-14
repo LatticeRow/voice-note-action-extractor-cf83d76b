@@ -241,12 +241,73 @@ final class AurelineTests: XCTestCase {
             transcriptionService: MockTranscriptionService()
         )
 
-        coordinator.resumePendingJobsIfNeeded()
-        try await Task.sleep(nanoseconds: 200_000_000)
+        await coordinator.resumePendingJobsIfNeeded()
 
         let updatedMemo = try XCTUnwrap(context.repository.fetchMemo(id: memo.id))
         XCTAssertEqual(updatedMemo.transcriptionStatus, .completed)
         XCTAssertFalse(updatedMemo.transcriptSegments.isEmpty)
+    }
+
+    func testResumePendingExtractionCompletesAfterRelaunch() async throws {
+        let context = try makeModelContext()
+        let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .recorded)
+        defer { try? FileManager.default.removeItem(at: audioSourceURL.deletingLastPathComponent()) }
+
+        let memo = try context.repository.createMemo(
+            title: "Project recap",
+            source: .recorded,
+            audioSourceURL: audioSourceURL
+        )
+        memo.createdAt = ISO8601DateFormatter().date(from: "2026-04-13T10:00:00Z") ?? memo.createdAt
+        try context.repository.applyTranscription(
+            TranscriptionPayload(
+                transcriptText: "Call Jordan tomorrow about the lighting quote. Send the revised site plan before Friday.",
+                localeIdentifier: "en_US",
+                segments: []
+            ),
+            to: memo
+        )
+        try context.repository.prepareForExtraction(memo)
+
+        let coordinator = ProcessingQueueCoordinator(
+            modelContainer: context.modelContainer,
+            audioFileStore: context.audioFileStore,
+            transcriptionService: MockTranscriptionService(),
+            actionExtractionService: ActionExtractionService()
+        )
+
+        await coordinator.resumePendingJobsIfNeeded()
+
+        let updatedMemo = try XCTUnwrap(context.repository.fetchMemo(id: memo.id))
+        XCTAssertEqual(updatedMemo.extractionStatus, .completed)
+        XCTAssertEqual(updatedMemo.actionItems.count, 2)
+        XCTAssertTrue(updatedMemo.mentions.contains(where: { $0.displayText == "Jordan" }))
+    }
+
+    func testPendingExtractionWithoutTranscriptBecomesRecoverableFailureAfterRelaunch() async throws {
+        let context = try makeModelContext()
+        let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .recorded)
+        defer { try? FileManager.default.removeItem(at: audioSourceURL.deletingLastPathComponent()) }
+
+        let memo = try context.repository.createMemo(
+            title: "Project recap",
+            source: .recorded,
+            audioSourceURL: audioSourceURL
+        )
+        try context.repository.prepareForExtraction(memo)
+
+        let coordinator = ProcessingQueueCoordinator(
+            modelContainer: context.modelContainer,
+            audioFileStore: context.audioFileStore,
+            transcriptionService: MockTranscriptionService(),
+            actionExtractionService: ActionExtractionService()
+        )
+
+        await coordinator.resumePendingJobsIfNeeded()
+
+        let updatedMemo = try XCTUnwrap(context.repository.fetchMemo(id: memo.id))
+        XCTAssertEqual(updatedMemo.extractionStatus, .failed)
+        XCTAssertEqual(updatedMemo.lastProcessingError, "Review stopped before the transcript was ready. Try again.")
     }
 
     func testExtractionCoordinatorPersistsLinkedActionItemsAndMentionsWithoutSpeechAPIs() async throws {

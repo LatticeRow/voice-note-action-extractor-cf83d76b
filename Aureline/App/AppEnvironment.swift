@@ -6,7 +6,7 @@ import SwiftData
 @Observable
 final class AppEnvironment {
     let router = AppRouter()
-    let permissions = PermissionCoordinator()
+    let permissions: PermissionCoordinator
     let processingQueue: ProcessingQueueCoordinator
     let reminderExporter: any ReminderExporting
     let notesShareComposer = NotesShareComposer()
@@ -27,6 +27,12 @@ final class AppEnvironment {
             reminderExporter = MockReminderExportService()
         } else {
             reminderExporter = ReminderExportService()
+        }
+
+        if launchArguments.contains("-uiTesting") {
+            permissions = PermissionCoordinator(simulatedStatuses: .onboardingPreview)
+        } else {
+            permissions = PermissionCoordinator()
         }
 
         processingQueue = ProcessingQueueCoordinator(

@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct MemoDetailView: View {
+    @Environment(AppEnvironment.self) private var appEnvironment
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var errorMessage: String?
@@ -66,16 +67,21 @@ struct MemoDetailView: View {
                 .font(.headline)
                 .foregroundStyle(Color.white)
 
-            Button("Transcribe") {
-                VoiceMemoRepository(modelContext: modelContext).addPlaceholderTranscript(to: memo)
+            Button(transcriptionActionTitle) {
+                Task {
+                    await appEnvironment.processingQueue.transcribeMemo(id: memo.id)
+                    appEnvironment.permissions.refreshStatuses()
+                }
             }
             .buttonStyle(AurelinePrimaryButtonStyle())
+            .disabled(memo.transcriptionStatus == .processing)
             .accessibilityIdentifier("detail.addTranscript")
 
             Button("Find Next Steps") {
                 VoiceMemoRepository(modelContext: modelContext).addPlaceholderExtraction(to: memo)
             }
             .buttonStyle(AurelineSecondaryButtonStyle())
+            .disabled(memo.transcriptionStatus != .completed)
             .accessibilityIdentifier("detail.addReview")
         }
         .aurelineCard()
@@ -155,6 +161,19 @@ struct MemoDetailView: View {
             dismiss()
         } catch {
             errorMessage = "Aureline couldn’t update this note. Try again."
+        }
+    }
+
+    private var transcriptionActionTitle: String {
+        switch memo.transcriptionStatus {
+        case .notStarted:
+            return "Transcribe"
+        case .processing:
+            return "Transcribing"
+        case .completed:
+            return "Transcribe Again"
+        case .failed:
+            return "Try Again"
         }
     }
 

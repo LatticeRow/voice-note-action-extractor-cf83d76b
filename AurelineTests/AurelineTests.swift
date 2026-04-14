@@ -95,6 +95,86 @@ final class AurelineTests: XCTestCase {
         }
     }
 
+    func testProcessingQueuePersistsTranscriptAndSegments() async throws {
+        let context = try makeModelContext()
+        let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .recorded)
+        defer { try? FileManager.default.removeItem(at: audioSourceURL.deletingLastPathComponent()) }
+
+        let memo = try context.repository.createMemo(
+            title: "Job walk",
+            source: .recorded,
+            audioSourceURL: audioSourceURL
+        )
+        let coordinator = ProcessingQueueCoordinator(
+            modelContainer: context.modelContainer,
+            audioFileStore: context.audioFileStore,
+            transcriptionService: MockTranscriptionService()
+        )
+
+        await coordinator.transcribeMemo(id: memo.id)
+
+        let updatedMemo = try XCTUnwrap(context.repository.fetchMemo(id: memo.id))
+        XCTAssertEqual(updatedMemo.transcriptionStatus, .completed)
+        XCTAssertEqual(
+            updatedMemo.transcriptText,
+            "Call Jordan tomorrow about the lighting quote. Send the revised site plan before Friday."
+        )
+        XCTAssertEqual(updatedMemo.transcriptSegments.count, 2)
+        XCTAssertNil(updatedMemo.lastProcessingError)
+    }
+
+    func testProcessingQueuePersistsExplicitOnDeviceFailure() async throws {
+        let context = try makeModelContext()
+        let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .imported)
+        defer { try? FileManager.default.removeItem(at: audioSourceURL.deletingLastPathComponent()) }
+
+        let memo = try context.repository.createMemo(
+            title: "Client follow-up",
+            source: .imported,
+            audioSourceURL: audioSourceURL
+        )
+        let coordinator = ProcessingQueueCoordinator(
+            modelContainer: context.modelContainer,
+            audioFileStore: context.audioFileStore,
+            transcriptionService: MockTranscriptionService(mode: .onDeviceUnavailable)
+        )
+
+        await coordinator.transcribeMemo(id: memo.id)
+
+        let updatedMemo = try XCTUnwrap(context.repository.fetchMemo(id: memo.id))
+        XCTAssertEqual(updatedMemo.transcriptionStatus, .failed)
+        XCTAssertEqual(
+            updatedMemo.lastProcessingError,
+            "Offline transcription for English (United States) isn’t available on this device."
+        )
+    }
+
+    func testResumePendingTranscriptionCompletesAfterRelaunch() async throws {
+        let context = try makeModelContext()
+        let audioSourceURL = try DemoAudioFileFactory.makeTemporaryAudioFile(source: .recorded)
+        defer { try? FileManager.default.removeItem(at: audioSourceURL.deletingLastPathComponent()) }
+
+        let memo = try context.repository.createMemo(
+            title: "Project recap",
+            source: .recorded,
+            audioSourceURL: audioSourceURL
+        )
+        try context.repository.prepareForTranscription(memo)
+
+        let coordinator = ProcessingQueueCoordinator(
+            modelContainer: context.modelContainer,
+            audioFileStore: context.audioFileStore,
+            transcriptionService: MockTranscriptionService()
+        )
+
+        coordinator.resumePendingJobsIfNeeded()
+        try await Task.sleep(nanoseconds: 200_000_000)
+
+        let updatedMemo = try XCTUnwrap(context.repository.fetchMemo(id: memo.id))
+        XCTAssertEqual(updatedMemo.transcriptionStatus, .completed)
+        XCTAssertFalse(updatedMemo.transcriptSegments.isEmpty)
+    }
+
     private func makeModelContext() throws -> RepositoryTestContext {
         let container = ModelContainerProvider.makeDefaultContainer(inMemory: true)
         let modelContext = ModelContext(container)
@@ -109,6 +189,7 @@ final class AurelineTests: XCTestCase {
         }
 
         return RepositoryTestContext(
+            modelContainer: container,
             modelContext: modelContext,
             repository: repository,
             audioFileStore: audioFileStore
@@ -117,6 +198,7 @@ final class AurelineTests: XCTestCase {
 }
 
 private struct RepositoryTestContext {
+    let modelContainer: ModelContainer
     let modelContext: ModelContext
     let repository: VoiceMemoRepository
     let audioFileStore: AudioFileStore

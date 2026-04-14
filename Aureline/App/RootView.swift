@@ -40,6 +40,9 @@ struct RootView: View {
         }
         .tint(AurelinePalette.accent)
         .background(AurelinePalette.background.ignoresSafeArea())
+        .task {
+            appEnvironment.processingQueue.resumePendingJobsIfNeeded()
+        }
     }
 }
 

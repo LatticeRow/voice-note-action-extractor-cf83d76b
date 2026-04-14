@@ -90,6 +90,23 @@ final class PermissionCoordinator {
         return updatedStatus
     }
 
+    func requestSpeechAccess() async -> AppPermissionState {
+        let currentStatus = speechStatusFromSystem()
+        guard currentStatus == .notDetermined else {
+            speechStatus = currentStatus
+            return currentStatus
+        }
+
+        let updatedStatus = await withCheckedContinuation { continuation in
+            SFSpeechRecognizer.requestAuthorization { authorizationStatus in
+                continuation.resume(returning: Self.mapSpeechAuthorizationStatus(authorizationStatus))
+            }
+        }
+
+        speechStatus = updatedStatus
+        return updatedStatus
+    }
+
     private func currentMicrophoneStatus() -> AppPermissionState {
         switch AVAudioApplication.shared.recordPermission {
         case .granted:
@@ -97,6 +114,36 @@ final class PermissionCoordinator {
         case .denied:
             .denied
         case .undetermined:
+            .notDetermined
+        @unknown default:
+            .unavailable
+        }
+    }
+
+    private func speechStatusFromSystem() -> AppPermissionState {
+        switch SFSpeechRecognizer.authorizationStatus() {
+        case .authorized:
+            .authorized
+        case .denied:
+            .denied
+        case .restricted:
+            .restricted
+        case .notDetermined:
+            .notDetermined
+        @unknown default:
+            .unavailable
+        }
+    }
+
+    private static func mapSpeechAuthorizationStatus(_ status: SFSpeechRecognizerAuthorizationStatus) -> AppPermissionState {
+        switch status {
+        case .authorized:
+            .authorized
+        case .denied:
+            .denied
+        case .restricted:
+            .restricted
+        case .notDetermined:
             .notDetermined
         @unknown default:
             .unavailable

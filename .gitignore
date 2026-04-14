@@ -18,5 +18,7 @@ build/
 xcuserdata/
 *.xcuserdatad/
 *.xcuserstate
+*.xccheckout
+*.xcscmblueprint
 *.moved-aside
 *.perspectivev3

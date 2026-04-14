@@ -27,6 +27,7 @@ final class AurelineUITests: XCTestCase {
 
         XCTAssertTrue(app.buttons["detail.addTranscript"].waitForExistence(timeout: 5))
         app.buttons["detail.addTranscript"].tap()
+        XCTAssertTrue(app.staticTexts["Call Jordan tomorrow about the lighting quote. Send the revised site plan before Friday."].waitForExistence(timeout: 5))
         app.buttons["detail.addReview"].tap()
 
         let backButton = app.navigationBars.buttons.element(boundBy: 0)
@@ -45,5 +46,24 @@ final class AurelineUITests: XCTestCase {
         app.tabBars.buttons["Settings"].tap()
         XCTAssertTrue(app.buttons["settings.refresh"].waitForExistence(timeout: 5))
         app.buttons["settings.refresh"].tap()
+    }
+
+    @MainActor
+    func testTranscriptionFailureShowsExplicitMessage() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTesting", "-uiTestingOnDeviceUnavailable"]
+        app.launch()
+
+        XCTAssertTrue(app.buttons["inbox.openCapture"].waitForExistence(timeout: 5))
+        app.buttons["inbox.openCapture"].tap()
+        XCTAssertTrue(app.buttons["capture.startRecording"].waitForExistence(timeout: 5))
+        app.buttons["capture.startRecording"].tap()
+        XCTAssertTrue(app.buttons["capture.saveRecording"].waitForExistence(timeout: 5))
+        app.buttons["capture.saveRecording"].tap()
+
+        XCTAssertTrue(app.buttons["detail.addTranscript"].waitForExistence(timeout: 5))
+        app.buttons["detail.addTranscript"].tap()
+
+        XCTAssertTrue(app.staticTexts["Offline transcription for English (United States) isn’t available on this device."].waitForExistence(timeout: 5))
     }
 }

@@ -85,6 +85,19 @@ struct VoiceMemoRepository {
         return try modelContext.fetch(descriptor)
     }
 
+    func fetchMemoIDs(withTranscriptionStatus status: ProcessingStatus) throws -> [UUID] {
+        let descriptor = FetchDescriptor<VoiceMemo>(
+            predicate: #Predicate { memo in
+                memo.transcriptionStatusRaw == status.rawValue
+            }
+        )
+        return try modelContext.fetch(descriptor).map(\.id)
+    }
+
+    func audioFileURL(for memo: VoiceMemo) throws -> URL {
+        try audioFileStore.fileURL(for: memo.audioRelativePath)
+    }
+
     func deleteMemo(_ memo: VoiceMemo) throws {
         let pendingDeletion = try audioFileStore.prepareForDeletion(atRelativePath: memo.audioRelativePath)
         modelContext.delete(memo)
@@ -201,6 +214,46 @@ struct VoiceMemoRepository {
         memo.touch()
 
         persist("Unable to save review items.", memo: memo)
+    }
+
+    func prepareForTranscription(_ memo: VoiceMemo) throws {
+        memo.transcriptionStatus = .processing
+        memo.lastProcessingError = nil
+        memo.touch()
+        try modelContext.save()
+    }
+
+    func applyTranscription(_ transcription: TranscriptionPayload, to memo: VoiceMemo) throws {
+        clearSegments(for: memo)
+        clearActionItems(for: memo)
+        clearMentions(for: memo)
+
+        memo.transcriptText = transcription.transcriptText
+        memo.localeIdentifier = transcription.localeIdentifier
+        memo.transcriptionStatus = .completed
+        memo.extractionStatus = .notStarted
+        memo.lastProcessingError = nil
+        memo.touch()
+
+        for segment in transcription.segments {
+            memo.transcriptSegments.append(
+                TranscriptSegment(
+                    startSeconds: segment.startSeconds,
+                    durationSeconds: segment.durationSeconds,
+                    text: segment.text,
+                    memo: memo
+                )
+            )
+        }
+
+        try modelContext.save()
+    }
+
+    func failTranscription(for memo: VoiceMemo, error: Error) throws {
+        memo.transcriptionStatus = .failed
+        memo.lastProcessingError = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+        memo.touch()
+        try modelContext.save()
     }
 
     private func clearSegments(for memo: VoiceMemo) {

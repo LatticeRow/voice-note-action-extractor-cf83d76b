@@ -37,6 +37,9 @@
 		AU000000000000000000001C /* AudioRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E01 /* AudioRecorderService.swift */; };
 		AU000000000000000000001D /* AudioImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E02 /* AudioImportService.swift */; };
 		AU000000000000000000001E /* ImportButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E03 /* ImportButton.swift */; };
+		AU000000000000000000001F /* TranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E04 /* TranscriptionService.swift */; };
+		AU0000000000000000000020 /* SpeechTranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E05 /* SpeechTranscriptionService.swift */; };
+		AU0000000000000000000021 /* ProcessingQueueCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AU0000000000000000000E06 /* ProcessingQueueCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +94,9 @@
 		AU0000000000000000000E01 /* AudioRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderService.swift; sourceTree = "<group>"; };
 		AU0000000000000000000E02 /* AudioImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioImportService.swift; sourceTree = "<group>"; };
 		AU0000000000000000000E03 /* ImportButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportButton.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E04 /* TranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionService.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E05 /* SpeechTranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTranscriptionService.swift; sourceTree = "<group>"; };
+		AU0000000000000000000E06 /* ProcessingQueueCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingQueueCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +221,8 @@
 			children = (
 				AU0000000000000000002241 /* Recording */,
 				AU0000000000000000002242 /* Import */,
+				AU0000000000000000002243 /* Transcription */,
+				AU0000000000000000002244 /* Processing */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -332,6 +340,23 @@
 				AU0000000000000000000E02 /* AudioImportService.swift */,
 			);
 			path = Import;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002243 /* Transcription */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000E04 /* TranscriptionService.swift */,
+				AU0000000000000000000E05 /* SpeechTranscriptionService.swift */,
+			);
+			path = Transcription;
+			sourceTree = "<group>";
+		};
+		AU0000000000000000002244 /* Processing */ = {
+			isa = PBXGroup;
+			children = (
+				AU0000000000000000000E06 /* ProcessingQueueCoordinator.swift */,
+			);
+			path = Processing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -490,6 +515,9 @@
 				AU000000000000000000001C /* AudioRecorderService.swift in Sources */,
 				AU000000000000000000001D /* AudioImportService.swift in Sources */,
 				AU000000000000000000001E /* ImportButton.swift in Sources */,
+				AU000000000000000000001F /* TranscriptionService.swift in Sources */,
+				AU0000000000000000000020 /* SpeechTranscriptionService.swift in Sources */,
+				AU0000000000000000000021 /* ProcessingQueueCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
